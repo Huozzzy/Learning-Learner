@@ -1,0 +1,71 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extName__",
+  "version": "1.0.0",
+  "default_locale": "zh_CN",
+  "description": "__MSG_extDescription__",
+  "icons": {
+    "16": "img/Pikachu-16.png",
+    "32": "img/Pikachu-32.png",
+    "64": "img/Pikachu-64.png",
+    "128": "img/Pikachu-128.png"
+  },
+  "browser_action": {
+    "default_icon": "img/Pikachu-16.png"
+  },
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "js/login.js"
+      ],
+      "matches": [
+        "*://pc.xuexi.cn/points/login.html*"
+      ]
+    },
+    {
+      "js": [
+        "js/points.js"
+      ],
+      "matches": [
+        "*://pc.xuexi.cn/points/my-points.html*"
+      ]
+    },
+    {
+      "js": [
+        "js/study.js"
+      ],
+      "matches": [
+        "*://pc.xuexi.cn/points/my-study.html*"
+      ]
+    },
+    {
+      "js": [
+        "js/runtime.js"
+      ],
+      "matches": [
+        "*://www.xuexi.cn/*/e43e220633a65f9b6d8b53712cba9caa.html*",
+        "*://www.xuexi.cn/*/cf94877c29e1c685574e0226618fb1be.html*",
+        "*://www.xuexi.cn/*/7f9f27c65e84e71e1b7189b7132b4710.html*",
+        "*://www.xuexi.cn/lgpage/detail/index.html?id=*"
+      ]
+    },
+    {
+      "js": [
+        "js/redirect.js"
+      ],
+      "matches": [
+        "*://*.xuexi.cn/*"
+      ]
+    }
+  ],
+  "permissions": [
+    "*://*.xuexi.cn/*",
+    "tabs",
+    "notifications"
+  ]
+}
