@@ -11,7 +11,7 @@
 
 
 ## 下载
-* [最新发布]()
+* [最新发布](https://github.com/Huozzzy/Learning-Learner/releases/download/release/Learning-Learner.crx)
 
 ## 安装方法
 
@@ -22,7 +22,7 @@
 
 ## 使用方法
 * 桌面浏览器
-  * 在浏览器右上方的工具栏中，点击 ![icon]() 按钮来启动程序。
+  * 在浏览器右上方的工具栏中，点击 ![icon](https://github.com/Huozzzy/Learning-Learner/blob/main/img/Pikachu-16.png?raw=true) 按钮来启动程序。
   * 如果没有登录，请在打开的小窗口中进行登录。
   * 等待打开的小窗口中的程序完成“学习”，期间你可以用这台电脑做其他事情，但不要 `最小化` 或 `关闭` 那个窗口。  
   

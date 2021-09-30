@@ -292,7 +292,7 @@ function notice(title, message = "") {
     if (!isMobile) {
         chrome.notifications.create({
             "type": "basic",
-            "iconUrl": "img/128.png",
+            "iconUrl": "img/Pikachu-128.png",
             "title": title,
             "message": message
         }, function (notificationId) {
