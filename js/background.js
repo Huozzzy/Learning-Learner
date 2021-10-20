@@ -8,7 +8,8 @@ let isMobile = !!(/Mobile/.exec(navigator.userAgent));
 let urlMap = {
     "index": "https://www.xuexi.cn",
     "points": "https://pc.xuexi.cn/points/my-points.html",
-    "scoreApi": "https://pc-api.xuexi.cn/open/api/score/today/queryrate",
+    // "scoreApi": "https://pc-api.xuexi.cn/open/api/score/today/queryrate",
+    "scoreApi":"https://pc-proxy-api.xuexi.cn/api/score/days/listScoreProgress?sence=score&deviceType=3",
     "channelApi": "https://www.xuexi.cn/lgdata/"
 };
 let channel = {
@@ -42,13 +43,13 @@ function getPointsData(callback) {
                 if (res.hasOwnProperty("code") && parseInt(res.code) === 200) {
                     if (checkScoreAPI(res)) {
                         let points = 0;
-                        let ruleList = [1, 2, 9, 1002, 1003];
-                        for (let key in res.data.dayScoreDtos) {
-                            if (!res.data.dayScoreDtos.hasOwnProperty(key)) {
+                        let ruleList = [100, 200, 300, 400];
+                        for (let key in res.data.taskProgress) {
+                            if (!res.data.taskProgress.hasOwnProperty(key)) {
                                 continue;
                             }
-                            if (ruleList.indexOf(res.data.dayScoreDtos[key].ruleId) !== -1) {
-                                points += res.data.dayScoreDtos[key].currentScore;
+                            if (ruleList.indexOf(res.data.taskProgress[key].sort) !== -1) {
+                                points += res.data.taskProgress[key].currentScore;
                             }
                         }
                         if (!isMobile) {
@@ -78,20 +79,20 @@ function getPointsData(callback) {
 //检查积分接口数据结构
 function checkScoreAPI(res) {
     if (res.hasOwnProperty("data")) {
-        if (res.data.hasOwnProperty("dayScoreDtos")) {
+        if (res.data.hasOwnProperty("taskProgress")) {
             let pass = 0;
-            let ruleList = [1, 2, 9, 1002, 1003];
-            for (let key in res.data.dayScoreDtos) {
-                if (!res.data.dayScoreDtos.hasOwnProperty(key)) {
+            let ruleList = [100, 200, 300, 400];
+            for (let key in res.data.taskProgress) {
+                if (!res.data.taskProgress.hasOwnProperty(key)) {
                     continue;
                 }
-                if (res.data.dayScoreDtos[key].hasOwnProperty("ruleId") && res.data.dayScoreDtos[key].hasOwnProperty("currentScore") && res.data.dayScoreDtos[key].hasOwnProperty("dayMaxScore")) {
-                    if (ruleList.indexOf(res.data.dayScoreDtos[key].ruleId) !== -1) {
+                if (res.data.taskProgress[key].hasOwnProperty("sort") && res.data.taskProgress[key].hasOwnProperty("currentScore") && res.data.taskProgress[key].hasOwnProperty("dayMaxScore")) {
+                    if (ruleList.indexOf(res.data.taskProgress[key].sort) !== -1) {
                         ++pass;
                     }
                 }
             }
-            if (pass === 5) {
+            if (pass === 4) {
                 return true;
             }
         }
@@ -180,23 +181,23 @@ function autoEarnPoints(timeout) {
     let newTime = 0;
     setTimeout(function () {
         getPointsData(function (data) {
-            let score = data.dayScoreDtos;
+            let score = data.taskProgress;
             let type;
 
             for (let key in score) {
                 if (!score.hasOwnProperty(key)) {
                     continue;
                 }
-                switch (score[key].ruleId) {
+                switch (score[key].sort) {
                     case 1:
-                    case 1002:
+                    case 200:
                         if (score[key].currentScore < score[key].dayMaxScore) {
                             type = "article";
                             newTime = 60 * 1000 + Math.floor(Math.random() * 3 * 1000);
                         }
                         break;
-                    case 2:
-                    case 1003:
+                    case 300:
+                    case 400:
                         if (score[key].currentScore < score[key].dayMaxScore) {
                             type = "video";
                             newTime = 60 * 1000 + Math.floor(Math.random() * 3 * 1000);
