@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extName__",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "default_locale": "zh_CN",
   "description": "__MSG_extDescription__",
   "icons": {
@@ -56,6 +56,32 @@
     },
     {
       "js": [
+        "js/exampractice.js"
+      ],
+      "matches": [
+        "*://pc.xuexi.cn/points/exam-practice.html*",
+        "*://pc.xuexi.cn/points/exam-weekly-detail.html*",
+        "*://pc.xuexi.cn/points/exam-paper-detail.html*"
+      ]
+    },
+    {
+      "js": [
+        "js/examweek.js"
+      ],
+      "matches": [
+        "*://pc.xuexi.cn/points/exam-weekly-list.html*"
+      ]
+    },
+    {
+      "js": [
+        "js/exampaper.js"
+      ],
+      "matches": [
+        "*://pc.xuexi.cn/points/exam-paper-list.html*"
+      ]
+    },
+    {
+      "js": [
         "js/redirect.js"
       ],
       "matches": [
@@ -66,6 +92,7 @@
   "permissions": [
     "*://*.xuexi.cn/*",
     "tabs",
-    "notifications"
+    "notifications",
+    "activeTab"
   ]
 }

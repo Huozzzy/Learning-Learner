@@ -1,5 +1,5 @@
 let scoreTabId = 0, runningTabId = 0, scoreWindowId = 0, runningWindowId = 0, channelUrls = {}, userId = 0,
-    usedUrls = {}, chooseLogin = 0;
+    usedUrls = {}, chooseLogin = 0, weeklyTitle = 0, paperTitle = 0;
 let windowWidth = 360 + Math.floor(Math.random() * 120);
 let windowHeight = 360 + Math.floor(Math.random() * 120);
 let chromeVersion = (/Chrome\/([0-9]+)/.exec(navigator.userAgent) || [0, 0])[1];
@@ -7,10 +7,13 @@ let firefoxVersion = (/Firefox\/([0-9]+)/.exec(navigator.userAgent) || [0, 0])[1
 let isMobile = !!(/Mobile/.exec(navigator.userAgent));
 let urlMap = {
     "index": "https://www.xuexi.cn",
-    "points": "https://pc.xuexi.cn/points/my-points.html",
-    // "scoreApi": "https://pc-api.xuexi.cn/open/api/score/today/queryrate",
-    "scoreApi":"https://pc-proxy-api.xuexi.cn/api/score/days/listScoreProgress?sence=score&deviceType=3",
-    "channelApi": "https://www.xuexi.cn/lgdata/"
+    // "points": "https://pc.xuexi.cn/points/my-points.html",
+    "points": "https://pc.xuexi.cn/points/login.html?ref=https%3A%2F%2Fpc.xuexi.cn%2Fpoints%2Fmy-points.html",
+    "scoreApi": "https://pc-proxy-api.xuexi.cn/api/score/days/listScoreProgress?sence=score&deviceType=2",
+    "channelApi": "https://www.xuexi.cn/lgdata/",
+    "dailyAsk": ["https://pc.xuexi.cn/points/exam-practice.html"],
+    "weeklyAsk": ["https://pc.xuexi.cn/points/exam-weekly-list.html"],
+    "paperAsk": ["https://pc.xuexi.cn/points/exam-paper-list.html"]
 };
 let channel = {
     'article': [
@@ -28,12 +31,17 @@ let channel = {
         "3m1erqf28h0r|https://www.xuexi.cn/4426aa87b0b64ac671c96379a3a8bd26/db086044562a57b441c24f2af1c8e101.html#1oajo2vt47l-5",
         "525pi8vcj24p|https://www.xuexi.cn/4426aa87b0b64ac671c96379a3a8bd26/db086044562a57b441c24f2af1c8e101.html#1oajo2vt47l-5",
         "48cdilh72vp4|https://www.xuexi.cn/4426aa87b0b64ac671c96379a3a8bd26/db086044562a57b441c24f2af1c8e101.html#1oajo2vt47l-5",
+        "1novbsbi47k|https://www.xuexi.cn/a191dbc3067d516c3e2e17e2e08953d6/b87d700beee2c44826a9202c75d18c85.html",
+        "1742g60067k|https://www.xuexi.cn/0b99b2eb0a13e4501cbaf82a5c37a853/b87d700beee2c44826a9202c75d18c85.html",
     ]
 };
 
 //检查用户积分数据
 function getPointsData(callback) {
     if (scoreTabId) {
+        try {
+            
+        
         let xhr = new XMLHttpRequest();
         xhr.open("GET", urlMap.scoreApi);
         xhr.setRequestHeader("Pragma", "no-cache");
@@ -42,18 +50,18 @@ function getPointsData(callback) {
                 let res = JSON.parse(xhr.responseText);
                 if (res.hasOwnProperty("code") && parseInt(res.code) === 200) {
                     if (checkScoreAPI(res)) {
-                        let points = 0;
-                        let ruleList = [100, 200, 300, 400];
-                        for (let key in res.data.taskProgress) {
-                            if (!res.data.taskProgress.hasOwnProperty(key)) {
-                                continue;
-                            }
-                            if (ruleList.indexOf(res.data.taskProgress[key].sort) !== -1) {
-                                points += res.data.taskProgress[key].currentScore;
-                            }
-                        }
+                        // let points = 0;
+                        // let ruleList = [100, 200, 300, 400, 500, 600, 700];
+                        // for (let key in res.data.taskProgress) {
+                        //     if (!res.data.taskProgress.hasOwnProperty(key)) {
+                        //         continue;
+                        //     }
+                        //     if (ruleList.indexOf(res.data.taskProgress[key].sort) !== -1) {
+                        //         points += res.data.taskProgress[key].currentScore;
+                        //     }
+                        // }
                         if (!isMobile) {
-                            chrome.browserAction.setBadgeText({"text": points.toString()});
+                            chrome.browserAction.setBadgeText({ "text": res.data.totalScore.toString() });
                         }
                         if (typeof callback === "function") {
                             callback(res.data);
@@ -68,11 +76,14 @@ function getPointsData(callback) {
                     if (runningWindowId) {
                         closeWindow();
                     }
-                    chrome.tabs.update(scoreTabId, {"active": true, "url": getLoginUrl()});
+                    chrome.tabs.update(scoreTabId, { "active": true, "url": getLoginUrl() });
                 }
             }
         };
         xhr.send();
+    } catch (error) {
+        autoEarnPoints(5 * 1000);
+    }
     }
 }
 
@@ -80,21 +91,22 @@ function getPointsData(callback) {
 function checkScoreAPI(res) {
     if (res.hasOwnProperty("data")) {
         if (res.data.hasOwnProperty("taskProgress")) {
-            let pass = 0;
-            let ruleList = [100, 200, 300, 400];
-            for (let key in res.data.taskProgress) {
-                if (!res.data.taskProgress.hasOwnProperty(key)) {
-                    continue;
-                }
-                if (res.data.taskProgress[key].hasOwnProperty("sort") && res.data.taskProgress[key].hasOwnProperty("currentScore") && res.data.taskProgress[key].hasOwnProperty("dayMaxScore")) {
-                    if (ruleList.indexOf(res.data.taskProgress[key].sort) !== -1) {
-                        ++pass;
-                    }
-                }
-            }
-            if (pass === 4) {
-                return true;
-            }
+            // let pass = 0;
+            // let ruleList = [100, 200, 300, 400, 500, 600, 700];
+            // for (let key in res.data.taskProgress) {
+            //     if (!res.data.taskProgress.hasOwnProperty(key)) {
+            //         continue;
+            //     }
+            //     if (res.data.taskProgress[key].hasOwnProperty("sort") && res.data.taskProgress[key].hasOwnProperty("currentScore") && res.data.taskProgress[key].hasOwnProperty("dayMaxScore")) {
+            //         if (ruleList.indexOf(res.data.taskProgress[key].sort) !== -1) {
+            //             ++pass;
+            //         }
+            //     }
+            // }
+            // if (pass === 7) {
+            //     return true;
+            // }
+            return true;
         }
     }
     return false;
@@ -106,7 +118,7 @@ function getChannelData(type, callback) {
     channelArr = channel[type][0].split('|');
 
     if (!isMobile) {
-        chrome.windows.get(runningWindowId, {"populate": true}, function (window) {
+        chrome.windows.get(runningWindowId, { "populate": true }, function (window) {
             if (typeof window !== "undefined") {
                 chrome.tabs.sendMessage(window.tabs[window.tabs.length - 1].id, {
                     "method": "redirect",
@@ -189,7 +201,7 @@ function autoEarnPoints(timeout) {
                     continue;
                 }
                 switch (score[key].sort) {
-                    case 1:
+                    case 100:
                     case 200:
                         if (score[key].currentScore < score[key].dayMaxScore) {
                             type = "article";
@@ -203,19 +215,65 @@ function autoEarnPoints(timeout) {
                             newTime = 60 * 1000 + Math.floor(Math.random() * 3 * 1000);
                         }
                         break;
+                    case 500:
+                        if (score[key].currentScore < score[key].dayMaxScore) {
+                            type = "exam-practice";
+                            newTime = 50 * 1000 + Math.floor(Math.random() * 1 * 1000);
+                        }
+                        break;
+                    case 600:
+                        if (weeklyTitle == 0 && score[key].currentScore <= 0) {
+                            type = "exam-weekly";
+                            newTime = 50 * 1000 + Math.floor(Math.random() * 2 * 1000);
+                        }
+                        break;
+                    case 700:
+                        if (paperTitle == 0 && score[key].currentScore <= 0) {
+                            type = "exam-paper";
+                            newTime = 60 * 1000 + Math.floor(Math.random() * 3 * 1000);
+                        }
+                        break;
+
                 }
-                if (type) {
-                    break;
+                // if (type) {
+                //     break;
+                // }
+            }
+
+            if (type && !channelUrls.hasOwnProperty(type)) {
+                if (type === 'article') {
+                    getChannelData("article", function (list) {
+                        channelUrls["article"] = list;
+                    });
+                }
+                if (type === 'video') {
+                    getChannelData("video", function (list) {
+                        channelUrls["video"] = list;
+                    });
+                }
+                if (type === 'exam-practice') {
+                    channelUrls["exam-practice"] = urlMap.dailyAsk;
+                }
+                if (type === 'exam-weekly') {
+                    channelUrls["exam-weekly"] = urlMap.weeklyAsk;
+                }
+                if (type === 'exam-paper') {
+                    channelUrls["exam-paper"] = urlMap.paperAsk;
                 }
             }
 
             if (type && channelUrls[type].length) {
-                url = channelUrls[type].shift();
+                if (type === 'article' || type === 'video') {
+                    url = channelUrls[type].shift();
+                } else {
+                    url = channelUrls[type][0];
+                }
+
             }
 
             if (!isMobile) {
                 if (url && scoreTabId && runningWindowId) {
-                    chrome.windows.get(runningWindowId, {"populate": true}, function (window) {
+                    chrome.windows.get(runningWindowId, { "populate": true }, function (window) {
                         if (typeof window !== "undefined") {
                             chrome.tabs.sendMessage(window.tabs[window.tabs.length - 1].id, {
                                 "method": "redirect",
@@ -302,7 +360,7 @@ function createWindow(url, callback) {
                 "left": 0,
             });
         }
-        chrome.tabs.update(window.tabs[window.tabs.length - 1].id, {"muted": true});
+        chrome.tabs.update(window.tabs[window.tabs.length - 1].id, { "muted": true });
         if (typeof callback === "function") {
             callback(window);
         }
@@ -330,8 +388,9 @@ function closeWindow(windowId) {
 
 //获取登录链接
 function getLoginUrl() {
-    let lang = chrome.i18n.getUILanguage() === "zh-CN" ? ".zh-CN" : "";
-    return chrome.runtime.getURL("login" + lang + ".html");
+    // let lang = chrome.i18n.getUILanguage() === "zh-CN" ? ".zh-CN" : "";
+    // return chrome.runtime.getURL("login" + lang + ".html");
+    return "https://pc.xuexi.cn/points/login.html?ref=https%3A%2F%2Fpc.xuexi.cn%2Fpoints%2Fmy-points.html";
 }
 
 //扩展按钮点击事件
@@ -342,13 +401,15 @@ chrome.browserAction.onClicked.addListener(function (tab) {
         if (!isMobile) {
             if (scoreTabId) {
                 if (runningWindowId) {
-                    chrome.windows.update(runningWindowId, {"focused": true, "state": "normal"});
+                    chrome.windows.update(runningWindowId, { "focused": true, "state": "normal" });
                 } else {
-                    chrome.windows.update(scoreWindowId, {"focused": true, "state": "normal"});
+                    chrome.windows.update(scoreWindowId, { "focused": true, "state": "normal" });
                 }
             } else {
                 channelUrls = {};
                 chooseLogin = 0;
+                weeklyTitle = 0;
+                paperTitle = 0;
                 createWindow(urlMap.points, function (window) {
                     scoreWindowId = window.id;
                     scoreTabId = window.tabs[window.tabs.length - 1].id;
@@ -357,14 +418,14 @@ chrome.browserAction.onClicked.addListener(function (tab) {
         } else {
             if (scoreTabId) {
                 if (runningTabId) {
-                    chrome.tabs.update(runningTabId, {"active": true});
+                    chrome.tabs.update(runningTabId, { "active": true });
                 } else {
-                    chrome.tabs.update(scoreTabId, {"active": true});
+                    chrome.tabs.update(scoreTabId, { "active": true });
                 }
             } else {
                 channelUrls = {};
                 chooseLogin = 0;
-                chrome.tabs.create({"url": urlMap.points}, function (tab) {
+                chrome.tabs.create({ "url": urlMap.points }, function (tab) {
                     scoreTabId = tab.id;
                 });
             }
@@ -388,7 +449,7 @@ if (!isMobile) {
             runningWindowId = 0;
         } else if (windowId === scoreWindowId) {
             scoreWindowId = 0;
-            chrome.browserAction.setBadgeText({"text": ""});
+            chrome.browserAction.setBadgeText({ "text": "" });
         }
     });
 }
@@ -419,6 +480,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                                 runningWindowId = window.id;
                                 notice(chrome.i18n.getMessage("extWorking"), chrome.i18n.getMessage("extWarning"));
                                 setTimeout(function () {
+                                    channelUrls["exam-practice"] = urlMap.dailyAsk;
+                                    channelUrls["exam-weekly"] = urlMap.weeklyAsk;
+                                    channelUrls["exam-paper"] = urlMap.paperAsk;
                                     getChannelData("article", function (list) {
                                         channelUrls["article"] = list;
                                         getChannelData("video", function (list) {
@@ -440,9 +504,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                                 }
                             }
                             userId = data.userId;
-                            chrome.tabs.create({"url": urlMap.index}, function (tab) {
+                            chrome.tabs.create({ "url": urlMap.index }, function (tab) {
                                 runningTabId = tab.id;
                                 setTimeout(function () {
+                                    channelUrls["exam-practice"] = urlMap.dailyAsk;
+                                    channelUrls["exam-weekly"] = urlMap.weeklyAsk;
+                                    channelUrls["exam-paper"] = urlMap.paperAsk;
                                     getChannelData("article", function (list) {
                                         channelUrls["article"] = list;
                                         getChannelData("video", function (list) {
@@ -471,9 +538,23 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         case "checkLogin":
             if (sender.tab.id === scoreTabId) {
                 if (!chooseLogin) {
-                    chrome.tabs.update(scoreTabId, {"url": getLoginUrl()});
+                    chrome.tabs.update(scoreTabId, { "url": getLoginUrl() });
                 }
             }
+            break;
+        case "weeklyTitle":
+            weeklyTitle = 1;
+            sendResponse({
+                "weeklyTitle": weeklyTitle
+            });
+            break;
+        case "paperTitle":
+            paperTitle = 1;
+            sendResponse({
+                "paperTitle": paperTitle
+            });
+            break;
+        case "askComplete":
             break;
     }
 });
