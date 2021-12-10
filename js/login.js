@@ -17,7 +17,7 @@
 setTimeout(function () {
     window.scrollTo({
         left: (document.body.scrollWidth - document.documentElement.clientWidth) / 2,
-        top: 900,
+        top: 1350,
         behavior: 'smooth'
     });
 }, 10);
