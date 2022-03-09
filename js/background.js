@@ -1,13 +1,12 @@
 let scoreTabId = 0, runningTabId = 0, scoreWindowId = 0, runningWindowId = 0, channelUrls = {}, userId = 0,
     usedUrls = {}, chooseLogin = 0, weeklyTitle = 0, paperTitle = 0;
-let windowWidth = 360 + Math.floor(Math.random() * 120);
-let windowHeight = 360 + Math.floor(Math.random() * 120);
+let windowWidth = 350 ;
+let windowHeight = 350 ;
 let chromeVersion = (/Chrome\/([0-9]+)/.exec(navigator.userAgent) || [0, 0])[1];
 let firefoxVersion = (/Firefox\/([0-9]+)/.exec(navigator.userAgent) || [0, 0])[1];
 let isMobile = !!(/Mobile/.exec(navigator.userAgent));
 let urlMap = {
     "index": "https://www.xuexi.cn",
-    // "points": "https://pc.xuexi.cn/points/my-points.html",
     "points": "https://pc.xuexi.cn/points/login.html?ref=https%3A%2F%2Fpc.xuexi.cn%2Fpoints%2Fmy-points.html",
     "scoreApi": "https://pc-proxy-api.xuexi.cn/api/score/days/listScoreProgress?sence=score&deviceType=2",
     "channelApi": "https://www.xuexi.cn/lgdata/",
@@ -50,16 +49,6 @@ function getPointsData(callback) {
                 let res = JSON.parse(xhr.responseText);
                 if (res.hasOwnProperty("code") && parseInt(res.code) === 200) {
                     if (checkScoreAPI(res)) {
-                        // let points = 0;
-                        // let ruleList = [100, 200, 300, 400, 500, 600, 700];
-                        // for (let key in res.data.taskProgress) {
-                        //     if (!res.data.taskProgress.hasOwnProperty(key)) {
-                        //         continue;
-                        //     }
-                        //     if (ruleList.indexOf(res.data.taskProgress[key].sort) !== -1) {
-                        //         points += res.data.taskProgress[key].currentScore;
-                        //     }
-                        // }
                         if (!isMobile) {
                             chrome.browserAction.setBadgeText({ "text": res.data.totalScore.toString() });
                         }
@@ -91,21 +80,6 @@ function getPointsData(callback) {
 function checkScoreAPI(res) {
     if (res.hasOwnProperty("data")) {
         if (res.data.hasOwnProperty("taskProgress")) {
-            // let pass = 0;
-            // let ruleList = [100, 200, 300, 400, 500, 600, 700];
-            // for (let key in res.data.taskProgress) {
-            //     if (!res.data.taskProgress.hasOwnProperty(key)) {
-            //         continue;
-            //     }
-            //     if (res.data.taskProgress[key].hasOwnProperty("sort") && res.data.taskProgress[key].hasOwnProperty("currentScore") && res.data.taskProgress[key].hasOwnProperty("dayMaxScore")) {
-            //         if (ruleList.indexOf(res.data.taskProgress[key].sort) !== -1) {
-            //             ++pass;
-            //         }
-            //     }
-            // }
-            // if (pass === 7) {
-            //     return true;
-            // }
             return true;
         }
     }
@@ -235,9 +209,6 @@ function autoEarnPoints(timeout) {
                         break;
 
                 }
-                // if (type) {
-                //     break;
-                // }
             }
 
             if (type && !channelUrls.hasOwnProperty(type)) {
@@ -388,8 +359,6 @@ function closeWindow(windowId) {
 
 //获取登录链接
 function getLoginUrl() {
-    // let lang = chrome.i18n.getUILanguage() === "zh-CN" ? ".zh-CN" : "";
-    // return chrome.runtime.getURL("login" + lang + ".html");
     return "https://pc.xuexi.cn/points/login.html?ref=https%3A%2F%2Fpc.xuexi.cn%2Fpoints%2Fmy-points.html";
 }
 
