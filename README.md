@@ -7,12 +7,12 @@ v1.3.1（2022-04-24）：
     优化部分逻辑。
 
 ## 下载
-* [最新发布](https://github.com/Huozzzy/Learning-Learner/releases/download/release/Learning-Learner.crx)
+* [最新发布](https://github.com/Huozzzy/Learning-Learner/releases/)
 
 ## 安装方法
 
 * Chrome
-  * 下载[最新发布](https://github.com/Huozzzy/Learning-Learner/releases/download/release/Learning-Learner.crx)crx文件，修改后缀为zip并解压。
+  * 下载zip并解压。
   * 在地址栏输入 `chrome://extensions` 并回车，勾选 **开发者模式** -> **加载已解压的扩展程序**, 选择解压的 `Learning-Learner` 文件夹。
 
 
