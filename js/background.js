@@ -49,9 +49,9 @@ function getPointsData(callback) {
                 let res = JSON.parse(xhr.responseText);
                 if (res.hasOwnProperty("code") && parseInt(res.code) === 200) {
                     if (checkScoreAPI(res)) {
-                        if (!isMobile) {
+                        // if (!isMobile) {
                             chrome.browserAction.setBadgeText({ "text": res.data.totalScore.toString() });
-                        }
+                        // }
                         if (typeof callback === "function") {
                             callback(res.data);
                         }
@@ -91,7 +91,7 @@ function getChannelData(type, callback) {
     shuffle(channel[type]);
     channelArr = channel[type][0].split('|');
 
-    if (!isMobile) {
+    // if (!isMobile) {
         chrome.windows.get(runningWindowId, { "populate": true }, function (window) {
             if (typeof window !== "undefined") {
                 chrome.tabs.sendMessage(window.tabs[window.tabs.length - 1].id, {
@@ -100,12 +100,12 @@ function getChannelData(type, callback) {
                 });
             }
         });
-    } else {
-        chrome.tabs.sendMessage(runningTabId, {
-            "method": "redirect",
-            "data": channelArr[1]
-        });
-    }
+    // } else {
+    //     chrome.tabs.sendMessage(runningTabId, {
+    //         "method": "redirect",
+    //         "data": channelArr[1]
+    //     });
+    // }
 
     setTimeout(function () {
         let xhr = new XMLHttpRequest();
@@ -242,7 +242,7 @@ function autoEarnPoints(timeout) {
 
             }
 
-            if (!isMobile) {
+            // if (!isMobile) {
                 if (url && scoreTabId && runningWindowId) {
                     chrome.windows.get(runningWindowId, { "populate": true }, function (window) {
                         if (typeof window !== "undefined") {
@@ -256,18 +256,18 @@ function autoEarnPoints(timeout) {
                 } else {
                     closeWindow();
                 }
-            } else {
-                if (url && scoreTabId && runningTabId) {
-                    chrome.tabs.sendMessage(runningTabId, {
-                        "method": "redirect",
-                        "data": url
-                    });
-                    autoEarnPoints(newTime);
-                } else {
-                    chrome.tabs.remove(runningTabId);
-                    chrome.tabs.remove(scoreTabId);
-                }
-            }
+            // } else {
+            //     if (url && scoreTabId && runningTabId) {
+            //         chrome.tabs.sendMessage(runningTabId, {
+            //             "method": "redirect",
+            //             "data": url
+            //         });
+            //         autoEarnPoints(newTime);
+            //     } else {
+            //         chrome.tabs.remove(runningTabId);
+            //         chrome.tabs.remove(scoreTabId);
+            //     }
+            // }
         });
     }, timeout);
 }
@@ -299,7 +299,7 @@ function shuffle(array) {
 
 //通知
 function notice(title, message = "") {
-    if (!isMobile) {
+    // if (!isMobile) {
         chrome.notifications.create({
             "type": "basic",
             "iconUrl": "img/Pikachu-128.png",
@@ -310,9 +310,9 @@ function notice(title, message = "") {
                 chrome.notifications.clear(notificationId);
             }, 5000);
         });
-    } else {
-        alert(title + (message ? "\n" + message : ""));
-    }
+    // } else {
+    //     alert(title + (message ? "\n" + message : ""));
+    // }
 }
 
 //创建窗口
@@ -367,7 +367,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
     if (chromeVersion < 45 && firefoxVersion < (isMobile ? 55 : 48)) {
         notice(chrome.i18n.getMessage("extVersion"));
     } else {
-        if (!isMobile) {
+        // if (!isMobile) {
             if (scoreTabId) {
                 if (runningWindowId) {
                     chrome.windows.update(runningWindowId, { "focused": true, "state": "normal" });
@@ -384,21 +384,21 @@ chrome.browserAction.onClicked.addListener(function (tab) {
                     scoreTabId = window.tabs[window.tabs.length - 1].id;
                 });
             }
-        } else {
-            if (scoreTabId) {
-                if (runningTabId) {
-                    chrome.tabs.update(runningTabId, { "active": true });
-                } else {
-                    chrome.tabs.update(scoreTabId, { "active": true });
-                }
-            } else {
-                channelUrls = {};
-                chooseLogin = 0;
-                chrome.tabs.create({ "url": urlMap.points }, function (tab) {
-                    scoreTabId = tab.id;
-                });
-            }
-        }
+        // } else {
+        //     if (scoreTabId) {
+        //         if (runningTabId) {
+        //             chrome.tabs.update(runningTabId, { "active": true });
+        //         } else {
+        //             chrome.tabs.update(scoreTabId, { "active": true });
+        //         }
+        //     } else {
+        //         channelUrls = {};
+        //         chooseLogin = 0;
+        //         chrome.tabs.create({ "url": urlMap.points }, function (tab) {
+        //             scoreTabId = tab.id;
+        //         });
+        //     }
+        // }
     }
 });
 
@@ -412,7 +412,7 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
 });
 
 //窗口移除事件
-if (!isMobile) {
+// if (!isMobile) {
     chrome.windows.onRemoved.addListener(function (windowId) {
         if (windowId === runningWindowId) {
             runningWindowId = 0;
@@ -421,7 +421,7 @@ if (!isMobile) {
             chrome.browserAction.setBadgeText({ "text": "" });
         }
     });
-}
+// }
 
 //通信事件
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -435,7 +435,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             break;
         case "startRun":
             if (!Object.keys(channelUrls).length) {
-                if (!isMobile) {
+                // if (!isMobile) {
                     if (!runningWindowId) {
                         getPointsData(function (data) {
                             if (userId !== data.userId) {
@@ -463,34 +463,34 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                             });
                         });
                     }
-                } else {
-                    if (!runningTabId) {
-                        getPointsData(function (data) {
-                            if (userId !== data.userId) {
-                                usedUrls = {
-                                    "article": [],
-                                    "video": []
-                                }
-                            }
-                            userId = data.userId;
-                            chrome.tabs.create({ "url": urlMap.index }, function (tab) {
-                                runningTabId = tab.id;
-                                setTimeout(function () {
-                                    channelUrls["exam-practice"] = urlMap.dailyAsk;
-                                    channelUrls["exam-weekly"] = urlMap.weeklyAsk;
-                                    channelUrls["exam-paper"] = urlMap.paperAsk;
-                                    getChannelData("article", function (list) {
-                                        channelUrls["article"] = list;
-                                        getChannelData("video", function (list) {
-                                            channelUrls["video"] = list;
-                                            autoEarnPoints(1000 + Math.floor(Math.random() * 1000));
-                                        });
-                                    });
-                                }, 1000 + Math.floor(Math.random() * 3000));
-                            });
-                        });
-                    }
-                }
+                // } else {
+                //     if (!runningTabId) {
+                //         getPointsData(function (data) {
+                //             if (userId !== data.userId) {
+                //                 usedUrls = {
+                //                     "article": [],
+                //                     "video": []
+                //                 }
+                //             }
+                //             userId = data.userId;
+                //             chrome.tabs.create({ "url": urlMap.index }, function (tab) {
+                //                 runningTabId = tab.id;
+                //                 setTimeout(function () {
+                //                     channelUrls["exam-practice"] = urlMap.dailyAsk;
+                //                     channelUrls["exam-weekly"] = urlMap.weeklyAsk;
+                //                     channelUrls["exam-paper"] = urlMap.paperAsk;
+                //                     getChannelData("article", function (list) {
+                //                         channelUrls["article"] = list;
+                //                         getChannelData("video", function (list) {
+                //                             channelUrls["video"] = list;
+                //                             autoEarnPoints(1000 + Math.floor(Math.random() * 1000));
+                //                         });
+                //                     });
+                //                 }, 1000 + Math.floor(Math.random() * 3000));
+                //             });
+                //         });
+                //     }
+                // }
             }
             break;
         case "useUrl":
