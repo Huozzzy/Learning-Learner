@@ -11,7 +11,7 @@ let urlMap = {
     "scoreApi": "https://pc-proxy-api.xuexi.cn/api/score/days/listScoreProgress?sence=score&deviceType=2",
     "channelApi": "https://www.xuexi.cn/lgdata/",
     "dailyAsk": ["https://pc.xuexi.cn/points/exam-practice.html"],
-    "weeklyAsk": ["https://pc.xuexi.cn/points/exam-weekly-list.html"],
+    // "weeklyAsk": ["https://pc.xuexi.cn/points/exam-weekly-list.html"],
     "paperAsk": ["https://pc.xuexi.cn/points/exam-paper-list.html"]
 };
 let channel = {
@@ -179,32 +179,33 @@ function autoEarnPoints(timeout) {
                     case 200:
                         if (score[key].currentScore < score[key].dayMaxScore) {
                             type = "article";
-                            newTime = 60 * 1000 + Math.floor(Math.random() * 3 * 1000);
+                            newTime = 60 * 1000 + Math.floor(Math.random() * 1 * 1000);
                         }
                         break;
                     case 300:
                     case 400:
                         if (score[key].currentScore < score[key].dayMaxScore) {
                             type = "video";
-                            newTime = 60 * 1000 + Math.floor(Math.random() * 3 * 1000);
+                            newTime = 60 * 1000 + Math.floor(Math.random() * 1 * 1000);
                         }
                         break;
                     case 500:
                         if (score[key].currentScore < score[key].dayMaxScore) {
                             type = "exam-practice";
-                            newTime = 50 * 1000 + Math.floor(Math.random() * 1 * 1000);
+                            newTime = 20 * 1000 + Math.floor(Math.random() * 1 * 1000);
                         }
                         break;
-                    case 600:
-                        if (weeklyTitle == 0 && score[key].currentScore <= 0) {
-                            type = "exam-weekly";
-                            newTime = 50 * 1000 + Math.floor(Math.random() * 2 * 1000);
-                        }
-                        break;
+                    //    2022-5-24 每周答题不再有新题，跳过每周答题积分的检查
+                    // case 1700:
+                    //     if (weeklyTitle == 0 && score[key].currentScore <= 0) {
+                    //         type = "exam-weekly";
+                    //         newTime = 50 * 1000 + Math.floor(Math.random() * 2 * 1000);
+                    //     }
+                    //     break;
                     case 700:
                         if (paperTitle == 0 && score[key].currentScore <= 0) {
                             type = "exam-paper";
-                            newTime = 60 * 1000 + Math.floor(Math.random() * 3 * 1000);
+                            newTime = 30 * 1000 + Math.floor(Math.random() * 3 * 1000);
                         }
                         break;
 
@@ -225,9 +226,9 @@ function autoEarnPoints(timeout) {
                 if (type === 'exam-practice') {
                     channelUrls["exam-practice"] = urlMap.dailyAsk;
                 }
-                if (type === 'exam-weekly') {
-                    channelUrls["exam-weekly"] = urlMap.weeklyAsk;
-                }
+                // if (type === 'exam-weekly') {
+                //     channelUrls["exam-weekly"] = urlMap.weeklyAsk;
+                // }
                 if (type === 'exam-paper') {
                     channelUrls["exam-paper"] = urlMap.paperAsk;
                 }
@@ -450,7 +451,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                                 notice(chrome.i18n.getMessage("extWorking"), chrome.i18n.getMessage("extWarning"));
                                 setTimeout(function () {
                                     channelUrls["exam-practice"] = urlMap.dailyAsk;
-                                    channelUrls["exam-weekly"] = urlMap.weeklyAsk;
+                                    // channelUrls["exam-weekly"] = urlMap.weeklyAsk;
                                     channelUrls["exam-paper"] = urlMap.paperAsk;
                                     getChannelData("article", function (list) {
                                         channelUrls["article"] = list;
@@ -511,12 +512,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 }
             }
             break;
-        case "weeklyTitle":
-            weeklyTitle = 1;
-            sendResponse({
-                "weeklyTitle": weeklyTitle
-            });
-            break;
+        // case "weeklyTitle":
+        //     weeklyTitle = 1;
+        //     sendResponse({
+        //         "weeklyTitle": weeklyTitle
+        //     });
+        //     break;
         case "paperTitle":
             paperTitle = 1;
             sendResponse({
