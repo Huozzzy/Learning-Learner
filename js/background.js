@@ -378,7 +378,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
             } else {
                 channelUrls = {};
                 chooseLogin = 0;
-                weeklyTitle = 0;
+                // weeklyTitle = 0;
                 paperTitle = 0;
                 createWindow(urlMap.points, function (window) {
                     scoreWindowId = window.id;
@@ -460,7 +460,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                                             autoEarnPoints(1000 + Math.floor(Math.random() * 1000));
                                         });
                                     });
-                                }, 1000 + Math.floor(Math.random() * 3000));
+                                }, 1000 + Math.floor(Math.random() * 1000));
                             });
                         });
                     }

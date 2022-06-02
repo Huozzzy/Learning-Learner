@@ -131,10 +131,8 @@ chrome.runtime.sendMessage({"method": "checkTab"}, {}, function (response) {
                                 }else{
                                     document.querySelector(".next-btn").click();
                                 }
-                            }else {
-                                closeWindow();
                             }
-                        },1000);
+                        },500);
                         setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000));
                     }
                 }

@@ -10,7 +10,7 @@ function autoScroll(type) {
                 });
                 autoScroll(type);
             }
-        }, 1000 + Math.floor(Math.random() * 3000))
+        }, 1000 + Math.floor(Math.random() * 1000))
     } else {
         setTimeout(function () {
             let x = Math.floor(Math.random() * 2);
@@ -20,7 +20,7 @@ function autoScroll(type) {
                 behavior: "smooth"
             });
             autoScroll(type);
-        }, 2000 + Math.floor(Math.random() * 58 * 1000));
+        }, 60 * 1000 + Math.floor(Math.random() * 1000));
     }
 }
 
