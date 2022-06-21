@@ -124,15 +124,13 @@ chrome.runtime.sendMessage({"method": "checkTab"}, {}, function (response) {
 
                 function answerSubmit(options = 0) {
                     if (options > 0 && ManageType == 'auto') {
-                        setTimeout(function (){
-                            if(document.querySelector(".action") == null ){
-                                if(document.querySelector(".submit-btn") != null){
-                                    document.querySelector(".submit-btn").click();
-                                }else{
-                                    document.querySelector(".next-btn").click();
-                                }
+                        if ($(".submit-btn").length) {
+                            $(".submit-btn").click();
+                        } else {
+                            if ($(".next-btn").length) {
+                                $(".next-btn").click();
                             }
-                        },500);
+                        }
                         setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000));
                     }
                 }

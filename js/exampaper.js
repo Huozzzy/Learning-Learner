@@ -7,9 +7,12 @@ chrome.runtime.sendMessage({"method": "checkTab"}, {}, function (response) {
                     document.querySelectorAll('.item .right > button').forEach(function (e, b, c) {
                         if (isNextPage) {
                             let i = e.innerText;
+                            let year = e.parentNode.parentNode.firstElementChild.lastElementChild.innerText.slice(0, 4);
                             if (i != "" && (i == '开始答题' || i == '继续答题')) {
                                 isNextPage = false;
-                                e.click();
+                                if ((new Date().getFullYear() == year)) {
+                                    e.click();
+                                }
                                 return;
                             }
                         }
