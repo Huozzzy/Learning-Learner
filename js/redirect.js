@@ -1,7 +1,8 @@
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    switch (request.method) {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    switch (message.type) {
         case "redirect":
-            window.location.replace(request.data);
+            window.location.replace(message.url);
             break;
     }
+    sendResponse({"redirect": true});
 });

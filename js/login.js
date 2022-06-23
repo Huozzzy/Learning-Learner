@@ -1,10 +1,16 @@
-setTimeout(function () {
-    window.scrollTo({
-        left: (document.body.scrollWidth - document.documentElement.clientWidth) / 2,
-        top: 1450,
-        behavior: 'smooth'
-    });
-}, 10);
+chrome.runtime.sendMessage({ type: "checkAuth" }, (response) => {
+    if (response && response.hasOwnProperty("runtime")) {
+        if (response.runtime) {
+            setTimeout(function () {
+                document.querySelector(".qrcode-box").scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                    inline: "center"
+                });
+            }, 1000);
+        }
+    }
+});
 
 
 

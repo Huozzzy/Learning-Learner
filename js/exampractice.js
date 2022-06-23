@@ -1,206 +1,231 @@
-chrome.runtime.sendMessage({"method": "checkTab"}, {}, function (response) {
+chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
     if (response && response.hasOwnProperty("runtime")) {
         if (response.runtime) {
-            window.onload = function () {
-                var waitTiming = 10, setTimeoutFunc = null, ManageType = 'auto', isManual = false;
-                function getAnswers() {
-                    var options = 0, optionsArray = [], match_num = {}, max = 0, delay = 0;
-                    isManual = false;
-                    if (document.querySelector(".q-header") == null) {
-                        if (document.querySelector(".ant-btn.action.ant-btn-primary") != null) {
-                            chrome.runtime.sendMessage({"method": "askComplete"});
-                            return;
-                        } else {
-                            setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000));
-                            return;
-                        }
-                    }
-                    var questionTitle = document.querySelector(".q-header");
-                    if (questionTitle == null) {
-                        return;
-                    }
-                    var questionType = questionTitle.innerText.substr(0, 3);
-                    if (document.querySelector(".q-footer .tips") != null) {
-                        document.querySelector(".q-footer .tips").click();
-                    } else {
-                        answerSubmit(1);
-                        return;
-                    }
-                    document.querySelectorAll('.line-feed [color=red]').forEach(function (a, b, c) {
-                        let i = a.innerText;
-                        if (i != "") optionsArray.push(i);
-                    });
 
-                    if (optionsArray.length == 0) {
-                        document.querySelectorAll('.line-feed > font').forEach(function (a, b, c) {
-                            let i = a.innerText;
-                            if (i != "") optionsArray.push(i);
-                        });
+            var WaitingTime = 5, setTimeoutFunc = null, ManageType = 'auto', isManual = false;
 
-                        if (optionsArray.length == 0) {
-                            document.querySelectorAll('.line-feed').forEach(function (a, b, c) {
-                                let i = a.innerText;
-                                if (i != "" && i != "请观看视频") {
-                                    optionsArray.push(i);
+            function getAnswers() {
+                let answerChoseNum = 0, answerArray = [], match_num = {}, max = 0, timeDelay = 0;
+                isManual = false;
+                // 获取答题标题，单选题、多选题、填空题
+                let questionTitle = $(".q-header");
+                if (!questionTitle.length) {
+                    // 如果答题已完成
+                    if ($(".ant-btn.action.ant-btn-primary").length) {
+                        setTimeout(function () {
+                            chrome.runtime.sendMessage({ type: "studyComplete" }, {}, function (res) {
+                                if (res.complete) {
+                                    window.close();
                                 }
                             });
-                        }
+                        }, 5000 + Math.floor(Math.random() * 5000));
+                    } else {
+                        setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 2000 + 2000));
                     }
-                    switch (questionType) {
-                        case "单选题":
-                            delay = 1;
-                        case "多选题":
-                            options = document.querySelectorAll('.q-answers .chosen').length;
-                            if (options <= 0) {
-                                document.querySelectorAll('.q-answer').forEach(function (a, b, c) {
-                                    var optionChoose = a.innerHTML.split('. ').slice(-1)[0];
-                                    var optionIsRight = false;
-                                    var optionMatches = 0;
-                                    var isChosen = false;
-                                    var optionString = optionsArray.join('');
-                                    optionChoose = optionChoose.replace(/\(/g, "（").replace(/\)/g, "）");
-                                    optionString = optionString.replace(/\(/g, "（").replace(/\)/g, "）");
+                    return;
+                }
+                // 提交答案
+                if (!$(".q-footer .tips").length) {
+                    answerSubmit(1);
+                    return;
+                }
+                // 获取答案
+                $(".q-footer .tips").click();
+                $('.line-feed [color=red]').each(function () {
+                    let i = $(this).text();
+                    if (i != "") {
+                        answerArray.push(i);
+                    }
+                });
 
-                                    isChosen = Boolean(a.className.indexOf("chosen") != -1);
-                                    optionIsRight = (optionChoose.indexOf(optionString) != -1 || optionString.indexOf(optionChoose) != -1) && optionString != "";
-                                    if (optionIsRight && questionType == '单选题') {
-                                        optionIsRight = (optionString.length == optionChoose.length ? true : false);
-                                    }
-                                    if (optionIsRight && !isChosen) {
-                                        a.click();
-                                        options++;
-                                    }
-                                    if (!optionIsRight) {
-                                        optionMatches += getoptionMatches(optionString, a.innerHTML);
-                                        match_num[optionMatches] = a
-                                    }
-                                })
-                                if (options == 0) {
-                                    for (let i in match_num) {
-                                        max = Number(max) >= Number(i) ? Number(max) : Number(i);
-                                    }
-                                    match_num[max].click();
-                                    options++;
-                                    isManual = true;
+                // 如果答案为空，则找到全部提示内容
+                if (answerArray.length == 0) {
+                    $('.line-feed > font').each(function () {
+                        let i = $(this).text();
+                        if (i != "") {
+                            answerArray.push(i);
+                        }
+                    });
+
+                    if (answerArray.length == 0) {
+                        $('.line-feed').each(function () {
+                            let i = $(this).text();
+                            if (i != "" && i != "请观看视频") {
+                                answerArray.push(i);
+                            }
+                        });
+                    }
+                }
+
+                // 获取题目
+                let questionType = questionTitle.text().substr(0, 3);
+                switch (questionType) {
+                    case "单选题":
+                        timeDelay = 1;
+                    case "多选题":
+                        answerChoseNum = $('.q-answers .chosen').length;
+                        if (answerChoseNum <= 0) {
+                            $('.q-answer').each(function () {
+                                let that = $(this);
+                                var answerSelect = that.text().split('. ').slice(-1)[0];
+                                var answerIsRight = false;
+                                var answerMatches = 0;
+                                var isChosen = false;
+                                var answerJoinString = answerArray.join('');
+
+                                // 转换符号，
+                                answerSelect = answerSelect.replace(/\(/g, "（").replace(/\)/g, "）");
+                                answerJoinString = answerJoinString.replace(/\(/g, "（").replace(/\)/g, "）");
+
+                                isChosen = Boolean(that.attr('class').indexOf("chosen") != -1);
+                                answerIsRight = (answerSelect.indexOf(answerJoinString) != -1 || answerJoinString.indexOf(answerSelect) != -1) && answerJoinString != "";
+                                if (answerIsRight && questionType == '单选题') {
+                                    answerIsRight = (answerJoinString.length == answerSelect.length ? true : false);
                                 }
-                                manualManage();
-                                delay = delay == 0 ? 2500 : 1500;
+                                if (answerIsRight && !isChosen) {
+                                    that.click();
+                                    answerChoseNum++;
+                                }
+                                if (!answerIsRight) {
+                                    answerMatches += getAnswerMatches(answerJoinString, that.text());
+                                    match_num[answerMatches] = that;
+                                }
+                            });
+
+                            if (answerChoseNum == 0) {
+                                for (let i in match_num) {
+                                    max = Number(max) >= Number(i) ? Number(max) : Number(i);
+                                }
+                                match_num[max].click();
+                                answerChoseNum++;
+                                isManual = true;
                             }
-                            break;
-                        case "填空题":
-                            var inpus = document.querySelectorAll('.q-body input');
-                            var inputs_e = document.querySelectorAll('.q-body input[value=""]');
-                            options = inpus.length - inputs_e.length;
-                            if (inputs_e.length > 0) {
-                                var ev = new Event('input', {bubbles: true});
-                                inpus.forEach(function (a, b, c) {
-                                    if (optionsArray[0] == undefined) {
-                                        isManual = true;
-                                        let a = document.querySelector(".q-body").innerText;
-                                        let n = parseInt(Math.random() * 2 + 2);
-                                        let i = parseInt(Math.random() * (a.length - n - 1));
-                                        optionsArray[0] = a.substr(i, n);
-                                    }
-                                    var value = "";
-                                    if (c.length == 1)
-                                        value = optionsArray.join('');
-                                    else
-                                        value = b < optionsArray.length ? optionsArray[b] : optionsArray[0];
-                                    if (a.value == "") {
-                                        a.setAttribute("value", value);
-                                        a.dispatchEvent(ev);
-                                        options++;
-                                    }
-                                })
-                                manualManage();
-                                delay = 3500;
-                            }
-                            break;
-                    }
-                    setTimeoutFunc = setTimeout(function () {
-                        answerSubmit(options)
-                    }, parseInt(Math.random() * 1000 + delay));
+                            manualManage();
+                            timeDelay = 1000;
+                        }
+                        break;
+                    case "填空题":
+                        var inpus = document.querySelectorAll('.q-body input');
+                        var inputs_e = document.querySelectorAll('.q-body input[value=""]');
+                        answerChoseNum = inpus.length - inputs_e.length;
+                        if (inputs_e.length > 0) {
+                            var ev = new Event('input', { bubbles: true });
+                            inpus.forEach(function (a, b, c) {
+                                if (answerArray[0] == undefined) {
+                                    isManual = true;
+                                    let a = document.querySelector(".q-body").innerText;
+                                    let n = parseInt(Math.random() * 2 + 2);
+                                    let i = parseInt(Math.random() * (a.length - n - 1));
+                                    answerArray[0] = a.substr(i, n);
+                                }
+                                var value = "";
+                                if (c.length == 1) {
+                                    value = answerArray.join('');
+                                } else {
+                                    value = b < answerArray.length ? answerArray[b] : answerArray[0];
+                                }
+                                if (a.value == "") {
+                                    a.setAttribute("value", value);
+                                    a.dispatchEvent(ev);
+                                    answerChoseNum++;
+                                }
+                            })
+                            manualManage();
+                            timeDelay = 1500;
+                        }
+                        break;
                 }
-
-                function answerSubmit(options = 0) {
-                    if (options > 0 && ManageType == 'auto') {
-                        if ($(".submit-btn").length) {
-                            $(".submit-btn").click();
-                        } else {
-                            if ($(".next-btn").length) {
-                                $(".next-btn").click();
-                            }
-                        }
-                        setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000));
-                    }
-                }
-
-                function getoptionMatches(a = '', b = '') {
-                    let c = 0;
-                    for (let i = 0; i < b.length; i++) {
-                        if (a.indexOf(b.substr(i, 1)) != -1) {
-                            c++;
-                        }
-                    }
-                    return c;
-                }
-
-                function manualManage() {
-                    if (document.querySelector("#my_ms") != null || !isManual) return;
-                    let ds_c = 0;
-                    let ds_t = null;
-                    ManageType = "wait";
-                    let e = document.createElement("div");
-                    e.id = "my_ms";
-                    e.innerHTML = "此题无完全匹配答案，已填写(选择)一个相对最匹配的答案(可能是错误的)。你可以点击下面按钮切换到手动做题并修正答案后再次点击按钮切换到自动做题。<br><span id='my_ds'>若 <span id='my_ds_c'>" + waitTiming + "</span> 秒无操作则继续自动做题</span><br>";
-                    e.style.color = 'red';
-                    e.style.fontSize = '20px';
-                    e.style.textAlign = 'center';
-                    document.querySelector(".header-row").appendChild(e);
-                    let b = document.createElement("button");
-                    b.style.color = 'green';
-                    b.style.fontSize = '24px';
-                    b.style.textAlign = 'center';
-                    b.style.marginTop = '10px';
-                    b.value = 'auto';
-                    b.innerText = '切换到手动做题';
-                    b.onclick = function () {
-                        document.querySelector("#my_ds").innerHTML = '';
-                        if (ds_t != null) {
-                            clearInterval(ds_t);
-                            ds_t = null;
-                        }
-                        if (this.value == 'auto') {
-                            this.value = 'manual';
-                            ManageType = "manual";
-                            b.innerText = '切换到自动做题';
-                            this.style.color = 'red';
-                        } else {
-                            this.value = 'auto';
-                            ManageType = 'auto';
-                            b.innerText = '切换到手动做题';
-                            this.style.color = 'green';
-                            document.querySelector("#my_ms").remove();
-                            getAnswers();
-                        }
-                    }
-                    e.appendChild(b);
-                    ds_t = setInterval(function () {
-                        ds_c++;
-                        document.querySelector("#my_ds_c").innerText = waitTiming - ds_c;
-                        if (ds_c >= waitTiming) {
-                            document.querySelector("#my_ms").remove();
-                            clearInterval(ds_t);
-                            ds_t = null;
-                            ManageType = 'auto';
-                            answerSubmit(1);
-                        }
-                    }, 1000);
-
-                }
-
-                setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000));
+                setTimeoutFunc = setTimeout(function () {
+                    answerSubmit(answerChoseNum)
+                }, parseInt(Math.random() *  timeDelay));
             }
+
+            function answerSubmit(answerChoseNum = 0) {
+                // 提交答案
+                if (answerChoseNum > 0 && ManageType == 'auto') {
+                    // 有提交按钮，提交数据
+                    if ($(".submit-btn").length) {
+                        $(".submit-btn").click();
+                    } else {
+                        if ($(".next-btn").length) {
+                            $(".next-btn").click();
+                        }
+                    }
+                    setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000 + 2000));
+                }
+            }
+
+            function getAnswerMatches(a = '', b = '') {
+                let c = 0;
+                for (let i = 0; i < b.length; i++) {
+                    if (a.indexOf(b.substr(i, 1)) != -1) {
+                        c++;
+                    }
+                }
+                return c;
+            }
+
+            function manualManage() {
+
+                let myId = "my_ms";
+                if ($('#' + myId).length || !isManual) {
+                    return;
+                }
+
+                // 浏览器提醒
+                chrome.runtime.sendMessage({ type: "answerError" });
+
+                // 设置类型等待
+                ManageType = "wait";
+
+                let timerId = "my_ds_c";
+                let buttonId = "my_bt_c";
+                let html = '<div id="' + myId + '" style="color: red; font-size: 20px; text-align: center;">此题无完全匹配答案，已填写(选择)一个相对最匹配的答案(可能是错误的)。你可以点击下面按钮切换到手动做题并修正答案后再次点击按钮切换到自动做题。<br>';
+                html += '<span>若 <span id="' + timerId + '">' + WaitingTime + '</span> 秒无操作则继续自动做题</span><br>';
+                html += '<button id="' + buttonId + '" value="auto" style="color: green; font-size: 24px; text-align: center; margin-top: 10px;">切换到手动做题</button>';
+                html += '</div>';
+
+                $(".header-row").append(html);
+
+                let timeLeftSeconds = 0;
+                let timeLeftEvenv = null;
+                // button点击事件
+                $('#' + buttonId).off('click').on('click', function () {
+                    if (timeLeftEvenv != null) {
+                        clearInterval(timeLeftEvenv);
+                        timeLeftEvenv = null;
+                    }
+                    if ($(this).val() == 'auto') {
+                        $(this).val('manual');
+                        $(this).text('切换到自动做题');
+                        $(this).css('color', 'red');
+                        ManageType = "manual";
+                    } else {
+                        $(this).val('auto');
+                        $(this).text('切换到手动做题');
+                        $(this).css('color', 'green');
+                        ManageType = 'auto';
+                        $('#' + myId).remove();
+                        getAnswers();
+                    }
+                });
+
+                // 定时事件
+                timeLeftEvenv = setInterval(function () {
+                    timeLeftSeconds++;
+                    $('#' + timerId).text(WaitingTime - timeLeftSeconds);
+                    if (timeLeftSeconds >= WaitingTime) {
+                        $('#' + myId).remove();
+                        clearInterval(timeLeftEvenv);
+                        timeLeftEvenv = null;
+                        ManageType = 'auto';
+                        answerSubmit(1);
+                    }
+                }, 100);
+            }
+
+            setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000));
+
         }
     }
 });

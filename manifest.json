@@ -1,7 +1,7 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "1.3.4",
+  "version": "3.0.0",
   "default_locale": "zh_CN",
   "description": "__MSG_extDescription__",
   "icons": {
@@ -10,13 +10,11 @@
     "64": "img/Pikachu-64.png",
     "128": "img/Pikachu-128.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": "img/Pikachu-16.png"
   },
   "background": {
-    "scripts": [
-      "js/background.js"
-    ]
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -37,26 +35,16 @@
     },
     {
       "js": [
-        "js/study.js"
-      ],
-      "matches": [
-        "*://pc.xuexi.cn/points/my-study.html*"
-      ]
-    },
-    {
-      "js": [
         "js/runtime.js"
       ],
       "matches": [
-        "*://www.xuexi.cn/*/e43e220633a65f9b6d8b53712cba9caa.html*",
-        "*://www.xuexi.cn/*/cf94877c29e1c685574e0226618fb1be.html*",
-        "*://www.xuexi.cn/*/7f9f27c65e84e71e1b7189b7132b4710.html*",
         "*://www.xuexi.cn/lgpage/detail/index.html?id=*"
       ]
     },
     {
       "js": [
-        "js/exampractice.js"
+        "js/exampractice.js",
+        "js/lib/jquery.js"
       ],
       "matches": [
         "*://pc.xuexi.cn/points/exam-practice.html*",
@@ -80,10 +68,17 @@
       ]
     }
   ],
+  "externally_connectable": {
+    "matches": [
+      "*://*.xuexi.cn/*"
+    ]
+  },
   "permissions": [
-    "*://*.xuexi.cn/*",
     "tabs",
     "notifications",
-    "activeTab"
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.xuexi.cn/*"
   ]
 }

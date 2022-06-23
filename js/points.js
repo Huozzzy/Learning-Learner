@@ -1,7 +1,7 @@
-chrome.runtime.sendMessage({"method": "checkTab"}, {}, function (response) {
+chrome.runtime.sendMessage({ type: "checkAuth" }, (response) => {
     if (response && response.hasOwnProperty("runtime")) {
         if (response.runtime) {
-            chrome.runtime.sendMessage({"method": "startRun"});
+            chrome.runtime.sendMessage({ type: "startRun" });
         }
     }
 });
