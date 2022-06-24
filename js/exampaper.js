@@ -29,12 +29,18 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                         document.querySelector('a.ant-pagination-item-link > i.anticon-right').click();
                         setTimeout(getNeedAnswer, parseInt(Math.random() *  2000));
                     } else {
-                        chrome.runtime.sendMessage({ type: "paperAskDoes" }, {}, function (res) {
+                        chrome.runtime.sendMessage({ type: "paperTitle" }, {}, function (res) {
                             if (res.complete) {
                                 window.close();
                             }
                         });
                     }
+                } else {
+                    chrome.runtime.sendMessage({ type: "paperTitle" }, {}, function (res) {
+                        if (res.complete) {
+                            window.close();
+                        }
+                    });
                 }
             }
 
@@ -57,7 +63,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
             //             document.querySelector('a.ant-pagination-item-link > i.anticon-left').click();
             //             setTimeout(getNeedAnswerHistory, parseInt(Math.random() * 2000));
             //         } else {
-            //             chrome.runtime.sendMessage({ type: "paperAskDoes" }, {}, function (res) {
+            //             chrome.runtime.sendMessage({ type: "paperTitle" }, {}, function (res) {
             //                 if (res.complete) {
             //                     window.close();
             //                 }
@@ -77,7 +83,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
             //     }
             //
             //     if (paperConfig.subject == "current") {
-                    setTimeout(getNeedAnswer, parseInt(Math.random() * 1000 + 5000));
+                    setTimeout(getNeedAnswer, parseInt(Math.random() * 1000 + 1000));
             //     } else {
             //         // 设置查询非当年题目
             //         setTimeout(function () {
