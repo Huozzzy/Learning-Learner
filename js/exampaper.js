@@ -8,8 +8,9 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                         let year = e.parentNode.parentNode.firstElementChild.lastElementChild.innerText.slice(0, 4);
                         let i = e.innerText;
                         if (i != "" && (i == '开始答题' || i == '继续答题')) {
-                            isNextPage = false;
+
                             if (year != "" && (new Date().getFullYear() == year)) {
+                                isNextPage = false;
                                 e.click();
                             }
                             // else {
@@ -27,20 +28,14 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                     var li = document.getElementsByClassName("ant-pagination-next")[0];
                     if (li.getAttribute("aria-disabled") == "false") {
                         document.querySelector('a.ant-pagination-item-link > i.anticon-right').click();
-                        setTimeout(getNeedAnswer, parseInt(Math.random() *  2000));
+                        setTimeout(getNeedAnswer, parseInt(Math.random() * 1000 + 1000));
                     } else {
-                        chrome.runtime.sendMessage({ type: "paperTitle" }, {}, function (res) {
+                        chrome.runtime.sendMessage({type: "paperTitle"}, {}, function (res) {
                             if (res.complete) {
                                 window.close();
                             }
                         });
                     }
-                } else {
-                    chrome.runtime.sendMessage({ type: "paperTitle" }, {}, function (res) {
-                        if (res.complete) {
-                            window.close();
-                        }
-                    });
                 }
             }
 

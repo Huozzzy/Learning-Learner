@@ -18,7 +18,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                                     window.close();
                                 }
                             });
-                        }, 5000 + Math.floor(Math.random() * 5000));
+                        }, 2000 + Math.floor(Math.random() * 1000));
                     } else {
                         setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 2000 + 2000));
                     }
@@ -137,7 +137,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                 }
                 setTimeoutFunc = setTimeout(function () {
                     answerSubmit(answerChoseNum)
-                }, parseInt(Math.random() *  timeDelay));
+                }, parseInt(Math.random() *  timeDelay + 1000));
             }
 
             function answerSubmit(answerChoseNum = 0) {
