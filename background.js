@@ -226,12 +226,12 @@ function startStudy() {
                     // 静音处理
                     chrome.tabs.update(window.tabs[window.tabs.length - 1].id, { "muted": true });
                     // 开始学习
-                    noticeMessage(chrome.i18n.getMessage("extWorking"), chrome.i18n.getMessage("extWarning"));
+                    noticeMessage(chrome.i18n.getMessage("extWarning"));
                 });
             });
         } else {
             // 学习中
-            noticeMessage(chrome.i18n.getMessage("extWorking"), chrome.i18n.getMessage("extLearning"));
+            noticeMessage(chrome.i18n.getMessage("extWorking"));
 
             // 设置焦点
             chrome.windows.update(result.studyWindowId, { "focused": true });
@@ -356,10 +356,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             break;
 
         // 回答错误
-        case "answerError":
-            noticeMessage(chrome.i18n.getMessage("extName"), chrome.i18n.getMessage("extAnswerError"))
-            sendResponse({ "complete": 0 });
-            break;
+        // case "answerError":
+        //     noticeMessage(chrome.i18n.getMessage("extAnswerError"))
+        //     sendResponse({ "complete": 0 });
+        //     break;
     }
     return true;
 });

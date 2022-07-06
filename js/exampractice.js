@@ -173,7 +173,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                 }
 
                 // 浏览器提醒
-                chrome.runtime.sendMessage({ type: "answerError" });
+                // chrome.runtime.sendMessage({ type: "answerError" });
 
                 // 设置类型等待
                 ManageType = "wait";
