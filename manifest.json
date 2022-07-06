@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extName__",
-  "version": "1.3.4",
+  "version": "2.0.1",
   "default_locale": "zh_CN",
   "description": "__MSG_extDescription__",
   "icons": {
@@ -56,7 +56,8 @@
     },
     {
       "js": [
-        "js/exampractice.js"
+        "js/exampractice.js",
+        "js/lib/jquery.js"
       ],
       "matches": [
         "*://pc.xuexi.cn/points/exam-practice.html*",

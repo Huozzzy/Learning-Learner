@@ -2,14 +2,18 @@ chrome.runtime.sendMessage({"method": "checkTab"}, {}, function (response) {
     if (response && response.hasOwnProperty("runtime")) {
         if (response.runtime) {
 
-            var waitTiming = 10, setTimeoutFunc = null, ManageType = 'auto', isManual = false;
+            var waitTiming = 5, setTimeoutFunc = null, ManageType = 'auto', isManual = false;
 
             function getAnswers() {
                 var options = 0, optionsArray = [], match_num = {}, max = 0, delay = 0;
                 isManual = false;
                 if (document.querySelector(".q-header") == null) {
                     if (document.querySelector(".ant-btn.action.ant-btn-primary") != null) {
-                        chrome.runtime.sendMessage({"method": "askComplete"});
+                        chrome.runtime.sendMessage({"method": "askComplete"}, {}, function (res) {
+                            if (res.complete) {
+                                window.close();
+                            }
+                        });
                         return;
                     } else {
                         setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000));
