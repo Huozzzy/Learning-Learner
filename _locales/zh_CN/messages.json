@@ -18,5 +18,9 @@
   "extFinish": {
     "message": "学习完毕！明天见",
     "description": ""
+  },
+  "extV": {
+    "message": "牛逼plus",
+    "description": ""
   }
 }

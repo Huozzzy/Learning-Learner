@@ -13,12 +13,12 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                                 isNextPage = false;
                                 e.click();
                             }
-                            // else {
-                            //     var item = document.getElementsByClassName("ant-pagination-item");
-                            //     item[item.length - 1].click();
-                            //     // 设置查询非当年题目
-                            //     setTimeout(getNeedAnswerHistory, parseInt(Math.random() * 1000 + 2000));
-                            // }
+                            else {
+                                var item = document.getElementsByClassName("ant-pagination-item");
+                                item[item.length - 1].click();
+                                // 设置查询非当年题目
+                                setTimeout(getNeedAnswerHistory, parseInt(Math.random() * 1000 + 2000));
+                            }
                             return;
                         }
                     }
@@ -39,33 +39,33 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                 }
             }
 
-            // function getNeedAnswerHistory() {
-            //     var isNextPage = true;
-            //     Array.from(document.querySelectorAll('.item .right > button')).reverse().forEach(function (e, b, c) {
-            //         if (isNextPage) {
-            //             let i = e.innerText;
-            //             if (i != "" && (i == '开始答题' || i == '继续答题')) {
-            //                 isNextPage = false;
-            //                 e.click();
-            //                 return;
-            //             }
-            //         }
-            //     });
-            //
-            //     if (isNextPage) {
-            //         var li = document.getElementsByClassName("ant-pagination-prev")[0];
-            //         if (li.getAttribute("aria-disabled") == "false") {
-            //             document.querySelector('a.ant-pagination-item-link > i.anticon-left').click();
-            //             setTimeout(getNeedAnswerHistory, parseInt(Math.random() * 2000));
-            //         } else {
-            //             chrome.runtime.sendMessage({ type: "paperTitle" }, {}, function (res) {
-            //                 if (res.complete) {
-            //                     window.close();
-            //                 }
-            //             });
-            //         }
-            //     }
-            // }
+            function getNeedAnswerHistory() {
+                var isNextPage = true;
+                Array.from(document.querySelectorAll('.item .right > button')).reverse().forEach(function (e, b, c) {
+                    if (isNextPage) {
+                        let i = e.innerText;
+                        if (i != "" && (i == '开始答题' || i == '继续答题')) {
+                            isNextPage = false;
+                            e.click();
+                            return;
+                        }
+                    }
+                });
+
+                if (isNextPage) {
+                    var li = document.getElementsByClassName("ant-pagination-prev")[0];
+                    if (li.getAttribute("aria-disabled") == "false") {
+                        document.querySelector('a.ant-pagination-item-link > i.anticon-left').click();
+                        setTimeout(getNeedAnswerHistory, parseInt(Math.random() * 2000));
+                    } else {
+                        chrome.runtime.sendMessage({ type: "paperTitle" }, {}, function (res) {
+                            if (res.complete) {
+                                window.close();
+                            }
+                        });
+                    }
+                }
+            }
 
             chrome.storage.local.get(['studyConfig'], function (result) {
             //     let config = result.studySubjectConfig;
