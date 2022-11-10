@@ -1,4 +1,4 @@
-let  scoreData = 0;
+let scoreData = 0;
 let urlMap = {
     "index": "https://www.xuexi.cn",
     "points": "https://pc.xuexi.cn/points/my-points.html",
@@ -6,7 +6,6 @@ let urlMap = {
     "channelApi": "https://www.xuexi.cn/lgdata/",
     "loginUrl": "https://pc.xuexi.cn/points/login.html",
     "dailyAsk": ["https://pc.xuexi.cn/points/exam-practice.html"],
-    // "weeklyAsk": ["https://pc.xuexi.cn/points/exam-weekly-list.html"],
     "paperAsk": ["https://pc.xuexi.cn/points/exam-paper-list.html"]
 };
 let channel = {
@@ -51,7 +50,7 @@ function startRun() {
                         chrome.action.setBadgeText({"text": scoreData.totalScore.toString()});
                         // 获取请求类型
                         let type;
-                        type = getTypeByPoint(scoreData.taskProgress, result.studyConfig, result.paperTitle );
+                        type = getTypeByPoint(scoreData.taskProgress, result.studyConfig, result.paperTitle);
                         if (typeof (type) != "undefined" && type != null) {
                             (async () => {
                                 const url = await getUrlByType(type);
@@ -95,7 +94,7 @@ async function getUrlByType(type) {
 
     if (type == "paper") {
         url = urlMap.paperAsk;
-    }  else if (type == "day") {
+    } else if (type == "day") {
         url = urlMap.dailyAsk;
     } else {
         let key;
@@ -149,13 +148,13 @@ async function getUrlByType(type) {
 }
 
 // 1阅读文章，2试听学习，4专项答题，5每周答题，6每日答题，9登录，1002文章时长，1003视听学习时长
-function getTypeByPoint(score, configs, paperTitle ) {
+function getTypeByPoint(score, configs, paperTitle) {
     let type;
     let config = configs.sort(function (a, b) {
         return a.sort - b.sort;
     });
 
-    let task = new Array();
+    let task = [];
     task['article'] = false;
     task['video'] = false;
     task['paper'] = false;
@@ -167,7 +166,7 @@ function getTypeByPoint(score, configs, paperTitle ) {
         if (!score.hasOwnProperty(key)) {
             continue;
         }
-        if (task['article'] == false && (score[key].sort == 200 )) {
+        if (task['article'] == false && (score[key].sort == 200)) {
             if (score[key].currentScore < score[key].dayMaxScore) {
                 task['article'] = true;
             }
@@ -224,7 +223,7 @@ function startStudy() {
                     "paperTitle": 0
                 }, function () {
                     // 静音处理
-                    chrome.tabs.update(window.tabs[window.tabs.length - 1].id, { "muted": true });
+                    chrome.tabs.update(window.tabs[window.tabs.length - 1].id, {"muted": true});
                     // 开始学习
                     noticeMessage(chrome.i18n.getMessage("extWarning"));
                 });
@@ -234,7 +233,7 @@ function startStudy() {
             noticeMessage(chrome.i18n.getMessage("extWorking"));
 
             // 设置焦点
-            chrome.windows.update(result.studyWindowId, { "focused": true });
+            chrome.windows.update(result.studyWindowId, {"focused": true});
         }
     });
     return true;
@@ -251,7 +250,7 @@ function stopStudy() {
             });
             // 重置参数
             chrome.storage.local.remove(["studyWindowId", "studyTabId"]);
-            chrome.action.setBadgeText({ text: "" });
+            chrome.action.setBadgeText({text: ""});
         }
     });
     return true;
@@ -285,7 +284,7 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
     chrome.storage.local.get(["studyTabId"], function (result) {
         if (result.studyTabId && tabId == result.studyTabId) {
             chrome.storage.local.remove(["studyWindowId", "studyTabId"]);
-            chrome.action.setBadgeText({ text: "" });
+            chrome.action.setBadgeText({text: ""});
         }
     });
     return true;
@@ -296,7 +295,7 @@ chrome.windows.onRemoved.addListener(function (windowId) {
     chrome.storage.local.get(["studyWindowId"], function (result) {
         if (result.studyWindowId && result.studyWindowId == windowId) {
             chrome.storage.local.remove(["studyWindowId", "studyTabId"]);
-            chrome.action.setBadgeText({ text: "" });
+            chrome.action.setBadgeText({text: ""});
         }
     });
     return true;
@@ -315,44 +314,44 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 if (result.studyWindowId) {
                     runtime = true;
                 }
-                sendResponse({ "runtime": runtime });
+                sendResponse({"runtime": runtime});
             });
             break;
 
         // 检测是否是扩展开启状态
         case "checkAuth":
-            sendResponse({ "runtime": true });
+            sendResponse({"runtime": true});
             break;
 
         // 开始学习
         case "startStudy":
             startStudy();
-            sendResponse({ "complete": 1 });
+            sendResponse({"complete": 1});
             break;
 
         // 结束学习
         case "stopStudy":
             stopStudy();
-            sendResponse({ "complete": 1 });
+            sendResponse({"complete": 1});
             break;
 
         // 开始运行
         case "startRun":
             startRun();
-            sendResponse({ "complete": 1 });
+            sendResponse({"complete": 1});
             break;
 
         // 专项答题
         case "paperTitle":
-            chrome.storage.local.set({ "paperTitle": 1 });
+            chrome.storage.local.set({"paperTitle": 1});
             startRun();
-            sendResponse({ "complete": 0 });
+            sendResponse({"complete": 0});
             break;
 
         // 学习完成
         case "studyComplete":
             startRun();
-            sendResponse({ "complete": 0 });
+            sendResponse({"complete": 0});
             break;
 
         // 回答错误
@@ -370,10 +369,10 @@ chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.local.clear();
 
     let studyConfig = [
-        { "type": "day", "order": 1, "title": "每日答题", "time": 0, "flag": true },
-        { "type": "paper", "order": 2, "title": "专项答题", "time": 0, "flag": true },
-        { "type": "article", "order": 3, "title": "文章学习", "time": 60, "flag": true },
-        { "type": "video", "order": 4, "title": "视频学习", "time": 60, "flag": true }
+        {"type": "day", "order": 1, "title": "每日答题", "time": 0, "flag": true},
+        {"type": "paper", "order": 2, "title": "专项答题", "time": 0, "flag": true},
+        {"type": "article", "order": 3, "title": "文章学习", "time": 60, "flag": true},
+        {"type": "video", "order": 4, "title": "视频学习", "time": 60, "flag": true}
     ];
 
     // 设置初始数据
