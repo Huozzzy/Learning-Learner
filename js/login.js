@@ -7,7 +7,7 @@ chrome.runtime.sendMessage({ type: "checkAuth" }, (response) => {
                     block: "center",
                     inline: "center"
                 });
-            }, 1000);
+            }, 3000);
         }
     }
 });

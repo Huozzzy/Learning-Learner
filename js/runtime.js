@@ -8,7 +8,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
 
                 // 延迟执行
                 setTimeout(function () {
-                    let newTime = 60000;
+                    let newTime = 61000;
 
                     // 获取配置时间
                     for (var i = 0; i < config.length; i++) {
