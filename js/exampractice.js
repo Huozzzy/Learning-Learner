@@ -5,9 +5,9 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
             var WaitingTime = 5, setTimeoutFunc = null, ManageType = 'auto', isManual = false;
 
             function getAnswers() {
-                let answerChoseNum = 0, answerArray = [], match_num = {}, max = 0, timeDelay = 0;
                 isManual = false;
                 // 获取答题标题，单选题、多选题、填空题
+                let answerCNum = 0, answerArray = [], match_num = {}, max = 0, timeDelay = 0;
                 let questionTitle = $(".q-header");
                 if (!questionTitle.length) {
                     // 如果答题已完成
@@ -63,8 +63,8 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                     case "单选题":
                         timeDelay = 1;
                     case "多选题":
-                        answerChoseNum = $('.q-answers .chosen').length;
-                        if (answerChoseNum <= 0) {
+                        answerCNum = $('.q-answers .chosen').length;
+                        if (answerCNum <= 0) {
                             $('.q-answer').each(function () {
                                 let that = $(this);
                                 var answerSelect = that.text().split('. ').slice(-1)[0];
@@ -84,7 +84,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                                 }
                                 if (answerIsRight && !isChosen) {
                                     that.click();
-                                    answerChoseNum++;
+                                    answerCNum++;
                                 }
                                 if (!answerIsRight) {
                                     answerMatches += getAnswerMatches(answerJoinString, that.text());
@@ -92,12 +92,12 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                                 }
                             });
 
-                            if (answerChoseNum == 0) {
+                            if (answerCNum == 0) {
                                 for (let i in match_num) {
                                     max = Number(max) >= Number(i) ? Number(max) : Number(i);
                                 }
                                 match_num[max].click();
-                                answerChoseNum++;
+                                answerCNum++;
                                 isManual = true;
                             }
                             manualManage();
@@ -107,7 +107,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                     case "填空题":
                         var inpus = document.querySelectorAll('.q-body input');
                         var inputs_e = document.querySelectorAll('.q-body input[value=""]');
-                        answerChoseNum = inpus.length - inputs_e.length;
+                        answerCNum = inpus.length - inputs_e.length;
                         if (inputs_e.length > 0) {
                             var ev = new Event('input', { bubbles: true });
                             inpus.forEach(function (a, b, c) {
@@ -127,7 +127,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                                 if (a.value == "") {
                                     a.setAttribute("value", value);
                                     a.dispatchEvent(ev);
-                                    answerChoseNum++;
+                                    answerCNum++;
                                 }
                             })
                             manualManage();
@@ -136,13 +136,13 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                         break;
                 }
                 setTimeoutFunc = setTimeout(function () {
-                    answerSubmit(answerChoseNum)
+                    answerSubmit(answerCNum)
                 }, parseInt(Math.random() *  timeDelay + 1000));
             }
 
-            function answerSubmit(answerChoseNum = 0) {
+            function answerSubmit(answerCNum = 0) {
                 // 提交答案
-                if (answerChoseNum > 0 && ManageType == 'auto') {
+                if (answerCNum > 0 && ManageType == 'auto') {
                     // 有提交按钮，提交数据
                     if ($(".submit-btn").length) {
                         $(".submit-btn").click();
