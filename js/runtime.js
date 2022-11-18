@@ -43,7 +43,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
 
                     // 学习完成关闭页面
                     setTimeout(function () {
-                        chrome.runtime.sendMessage({ type: "studyComplete" }, {}, function (res) {
+                        chrome.runtime.sendMessage({ type: "learnComplete" }, {}, function (res) {
                             if (res.complete) {
                                 window.close();
                             }
@@ -79,7 +79,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                             autoScroll(type);
                         }
                     }, 1000 + Math.floor(Math.random() * 2000))
-                } else {
+                } else if (type === "video"){
                     setTimeout(function () {
                         let x = Math.floor(Math.random() * 2);
                         window.scrollBy({
