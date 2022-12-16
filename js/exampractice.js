@@ -217,13 +217,15 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
             var x =
               btn_slide_rect.left +
               btn_slide_rect.width * (parseInt(Math.random() * 5) / 10 + 0.2)
+            x = x.toFixed(2)
+            console.log(x)
             var y = btn_slide_rect.top + btn_slide_rect.height / 2
           }
           var nc_scale = document.getElementById('nc_1_n1t')
           if (nc_scale !== null) {
             var w = nc_scale.getBoundingClientRect().width
           }
-          const eventdown = new MouseEvent('mousedown',{
+          const eventdown = new MouseEvent('mousedown', {
             bubbles: true,
             cancelable: true,
             view: window,
@@ -236,45 +238,42 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
             altKey: false,
             shiftKey: false,
             metaKey: false,
-            button:0,
+            button: 0,
             relatedTarget: null,
           });
           if (btn_slide != null) {
             btn_slide.dispatchEvent(eventdown)
           }
 
-          var aa = 0
-          var bb = 0
+          var offsetX = 0
           //滑动滑块
           var intervaltimer = setInterval(function () {
             // var mousemove = document.createEvent('MouseEvents')
-            var _x = x + aa
-            var _y = y + bb
-            setTimeout (function(){
-                const eventmove = new MouseEvent('mousemove',{
-                    bubbles: true,
-                    cancelable: true,
-                    view: window,
-                    detail: 0,
-                    screenX: _x,
-                    screenY: _y,
-                    clientX: _x,
-                    clientY: _y,
-                    ctrlKey: false,
-                    altKey: false,
-                    shiftKey: false,
-                    metaKey: false,
-                    button:0,
-                    relatedTarget: null,
-                  });
-            },Math.floor(Math.random() *  1000));
+            var _x = x + offsetX
+            var _y = y
+            const eventmove = new MouseEvent('mousemove', {
+              bubbles: true,
+              cancelable: true,
+              view: window,
+              detail: 0,
+              screenX: _x,
+              screenY: _y,
+              clientX: _x,
+              clientY: _y,
+              ctrlKey: false,
+              altKey: false,
+              shiftKey: false,
+              metaKey: false,
+              button: 0,
+              relatedTarget: null,
+            })
             if (btn_slide != null) {
               btn_slide.dispatchEvent(eventmove)
             }
             if (_x - x >= w) {
               // 滑到最右边
               clearInterval(intervaltimer);
-              const eventup = new MouseEvent('mouseup',{
+              const eventup = new MouseEvent('mouseup', {
                 bubbles: true,
                 cancelable: true,
                 view: window,
@@ -287,14 +286,15 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
                 altKey: false,
                 shiftKey: false,
                 metaKey: false,
-                button:0,
+                button: 0,
                 relatedTarget: null,
               });
               if (btn_slide != null) {
                 btn_slide.dispatchEvent(eventup)
               }
             } else {
-              aa += parseInt(Math.random() * (209 - 199) + 199) / 33
+              offsetX += (parseInt((Math.random() * (209 - 199) + 199) / 33)).toFixed(2)
+              console.log('offsetX='+offsetX)
             }
           }, 20)
         }
