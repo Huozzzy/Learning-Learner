@@ -2,11 +2,9 @@
 ## 自用！
 
 ## 更新说明
-v3.0.3（2022-07-05）：
+v3.0.4（2022-12-19）：
 
-    1.更新chrome插件manifest v3 请使用支持v3扩展的浏览器版本
-    2.专项答题现在只做当年题目，往年题目不再答题
-    3.只支持v2扩展的浏览器请使用release中的v201.crx
+    1.解决每日答题弹出滑动验证框问题
 
 ## 下载
 * [最新发布](https://github.com/Huozzzy/Learning-Learner/releases/)

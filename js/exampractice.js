@@ -215,7 +215,7 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
           if (btn_slide !== null) {
             var btn_slide_rect = btn_slide.getBoundingClientRect()
             var x = btn_slide_rect.left + btn_slide_rect.width * (parseInt(Math.random() * 5) / 10 + 0.2)
-            x = x.toFixed(2)
+            // x = x.toFixed(2)
             // console.log('x=' + x)
             var y = btn_slide_rect.top + btn_slide_rect.height / 2
 
@@ -291,7 +291,7 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
                   btn_slide.dispatchEvent(eventup)
                 }
               } else {
-                offsetX += (parseInt((Math.random() * (209 - 199) + 199) / 33)).toFixed(2)
+                offsetX += parseInt((Math.random() * (209 - 199) + 199) / 33)
                 // console.log('offsetX=' + offsetX)
               }
             }, 30)
