@@ -8,16 +8,16 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
 
       // 滑块验证
       const swiperValid = document.getElementById('swiper_valid')
-      if (swiperValid) {
-        let obs = new MutationObserver((mutationRecords) => {
-          slideVerify()
-        })
-        obs.observe(swiperValid, {
-          childList: true,
-          subtree: true,
-          characterDataOldValue: true,
-        })
-      }
+      // if (swiperValid) {
+      //   let obs = new MutationObserver((mutationRecords) => {
+      //     slideVerify()
+      //   })
+      //   obs.observe(swiperValid, {
+      //     childList: true,
+      //     subtree: true,
+      //     characterDataOldValue: true,
+      //   })
+      // }
 
       function getAnswers() {
         let answerChoseNum = 0,
@@ -215,10 +215,7 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
           if (btn_slide !== null) {
             var btn_slide_rect = btn_slide.getBoundingClientRect()
             var x = btn_slide_rect.left + btn_slide_rect.width * (parseInt(Math.random() * 5) / 10 + 0.2)
-            // x = x.toFixed(2)
-            // console.log('x=' + x)
             var y = btn_slide_rect.top + btn_slide_rect.height / 2
-
             var nc_scale = document.getElementById('nc_1_n1t')
             if (nc_scale !== null) {
               var w = nc_scale.getBoundingClientRect().width
@@ -292,7 +289,6 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
                 }
               } else {
                 offsetX += parseInt((Math.random() * (209 - 199) + 199) / 33)
-                // console.log('offsetX=' + offsetX)
               }
             }, 30)
           }
