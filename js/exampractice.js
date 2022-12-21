@@ -8,16 +8,16 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
 
       // 滑块验证
       const swiperValid = document.getElementById('swiper_valid')
-      // if (swiperValid) {
-      //   let obs = new MutationObserver((mutationRecords) => {
-      //     slideVerify()
-      //   })
-      //   obs.observe(swiperValid, {
-      //     childList: true,
-      //     subtree: true,
-      //     characterDataOldValue: true,
-      //   })
-      // }
+      if (swiperValid) {
+        let obs = new MutationObserver((mutationRecords) => {
+          slideVerify()
+        })
+        obs.observe(swiperValid, {
+          childList: true,
+          subtree: true,
+          characterDataOldValue: true,
+        })
+      }
 
       function getAnswers() {
         let answerChoseNum = 0,
