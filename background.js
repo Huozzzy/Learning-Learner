@@ -2,7 +2,7 @@ let  scoreData = 0;
 let urlMap = {
     "index": "https://www.xuexi.cn",
     "points": "https://pc.xuexi.cn/points/my-points.html",
-    "scoreApi": "https://pc-proxy-api.xuexi.cn/api/score/days/listScoreProgress?sence=score&deviceType=2",
+    "scoreApi": "https://pc-proxy-api.xuexi.cn/delegate/score/days/listScoreProgress?sence=score&deviceType=2",
     "channelApi": "https://www.xuexi.cn/lgdata/",
     "loginUrl": "https://pc.xuexi.cn/points/login.html",
     "dailyAsk": ["https://pc.xuexi.cn/points/exam-practice.html"],
