@@ -371,7 +371,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
     let studyConfig = [
         { "type": "day", "order": 1, "title": "每日答题", "time": 0, "flag": true },
-        { "type": "paper", "order": 2, "title": "专项答题", "time": 0, "flag": true },
+        // { "type": "paper", "order": 2, "title": "专项答题", "time": 0, "flag": true },
         { "type": "article", "order": 3, "title": "文章学习", "time": 60, "flag": true },
         { "type": "video", "order": 4, "title": "视频学习", "time": 60, "flag": true }
     ];

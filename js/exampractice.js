@@ -41,11 +41,11 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
                   }
                 },
               )
-            }, 2000 + Math.floor(Math.random() * 1000))
+            }, 3000 + Math.floor(Math.random() * 1000))
           } else {
             setTimeoutFunc = setTimeout(
               getAnswers,
-              parseInt(Math.random() * 2000 + 2000),
+              parseInt(Math.random() * 2000 + 3000),
             )
           }
           return
@@ -177,7 +177,7 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
         }
         setTimeoutFunc = setTimeout(function () {
           answerSubmit(answerChoseNum)
-        }, parseInt(Math.random() * timeDelay + 1000))
+        }, parseInt(Math.random() * timeDelay + 3000))
       }
 
       function answerSubmit(answerChoseNum = 0) {
@@ -193,7 +193,7 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
           }
           setTimeoutFunc = setTimeout(
             getAnswers,
-            parseInt(Math.random() * 1000 + 2000),
+            parseInt(Math.random() * 1000 + 4000),
           )
         }
       }
@@ -366,7 +366,7 @@ chrome.runtime.sendMessage({ type: 'checkRunning' }, {}, function (response) {
         }, 100)
       }
 
-      setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000))
+      setTimeoutFunc = setTimeout(getAnswers, parseInt(Math.random() * 1000 + 4000 ))
     }
   }
 })

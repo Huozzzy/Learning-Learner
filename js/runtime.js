@@ -8,7 +8,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
 
                 // 延迟执行
                 setTimeout(function () {
-                    let newTime = 60000;
+                    let newTime = 65000;
 
                     // 获取配置时间
                     for (var i = 0; i < config.length; i++) {
@@ -48,7 +48,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                                 window.close();
                             }
                         });
-                    }, newTime + Math.floor(Math.random() *  2000));
+                    }, newTime + Math.floor(Math.random() *  3000));
 
                     // 页面点击时间
                     if (document.querySelector(".content")) {
@@ -62,7 +62,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                     });
                     autoScroll(type);
 
-                },  Math.floor(Math.random() * 2000));
+                },  Math.floor(Math.random() * 5000));
             });
 
             // 滚动方法
