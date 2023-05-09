@@ -121,7 +121,7 @@ async function getUrlByType(type) {
                     // 判断发布时间是否是365天之内，如果没有，判断url规则
                     if (urlData[key].hasOwnProperty("publishTime")) {
                         publishTime = new Date(urlData[key].publishTime);
-                        var lastYear = new Date(new Date() - 365 * 86400000);
+                        var lastYear = new Date(new Date() - 60 * 86400000);
                         if (publishTime < lastYear) {
                             continue;
                         }
@@ -206,35 +206,44 @@ function getTypeByPoint(score, configs, paperTitle ) {
 
 // 开始学习
 function startStudy() {
+    
     // 获取数据，判断执行
     chrome.storage.local.get(["studyWindowId"], function (result) {
         if (!result.studyWindowId) {
-            chrome.windows.create({
+                chrome.windows.create({
                 "url": urlMap.points,
                 "type": "popup",
-                // "state": "fullscreen"
                 "top": 0,
                 "left": 0,
-                "width": 350,
-                "height": 350
+                "width": 300,
+                "height": 400,
             }, function (window) {
+                chrome.windows.update(window.id, {state:'maximized'});
                 chrome.storage.local.set({
                     "studyWindowId": window.id,
                     "studyTabId": window.tabs[window.tabs.length - 1].id,
-                    "paperTitle": 0
+                    "paperTitle": 0,
                 }, function () {
                     // 静音处理
-                    chrome.tabs.update(window.tabs[window.tabs.length - 1].id, { "muted": true });
+                    chrome.tabs.update(window.tabs[window.tabs.length - 1].id, { 
+                        "muted": true 
+                    });
                     // 开始学习
                     noticeMessage(chrome.i18n.getMessage("extWarning"));
                 });
             });
+
         } else {
             // 学习中
             noticeMessage(chrome.i18n.getMessage("extWorking"));
 
             // 设置焦点
-            chrome.windows.update(result.studyWindowId, { "focused": true });
+            chrome.windows.update(result.studyWindowId, { 
+                "focused": true ,
+                'updateProperties': {
+                'state': 'maximized'
+              }
+            });
         }
     });
     return true;

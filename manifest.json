@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "default_locale": "zh_CN",
   "description": "__MSG_extDescription__",
   "icons": {
@@ -76,7 +76,9 @@
   "permissions": [
     "tabs",
     "notifications",
-    "storage"
+    "storage",
+    "windows",
+    "system.display"
   ],
   "host_permissions": [
     "*://*.xuexi.cn/*"
