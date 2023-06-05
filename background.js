@@ -7,7 +7,7 @@ let urlMap = {
     "loginUrl": "https://pc.xuexi.cn/points/login.html",
     "dailyAsk": ["https://pc.xuexi.cn/points/exam-practice.html"],
     // "weeklyAsk": ["https://pc.xuexi.cn/points/exam-weekly-list.html"],
-    "paperAsk": ["https://pc.xuexi.cn/points/exam-paper-list.html"]
+    // "paperAsk": ["https://pc.xuexi.cn/points/exam-paper-list.html"]
 };
 let channel = {
     "articleUrl": [
@@ -121,7 +121,7 @@ async function getUrlByType(type) {
                     // 判断发布时间是否是365天之内，如果没有，判断url规则
                     if (urlData[key].hasOwnProperty("publishTime")) {
                         publishTime = new Date(urlData[key].publishTime);
-                        var lastYear = new Date(new Date() - 60 * 86400000);
+                        var lastYear = new Date(new Date() - 20 * 86400000);
                         if (publishTime < lastYear) {
                             continue;
                         }
@@ -158,7 +158,7 @@ function getTypeByPoint(score, configs, paperTitle ) {
     let task = new Array();
     task['article'] = false;
     task['video'] = false;
-    task['paper'] = false;
+    // task['paper'] = false;
     // task['week'] = false;
     task['day'] = false;
 
@@ -172,22 +172,16 @@ function getTypeByPoint(score, configs, paperTitle ) {
                 task['article'] = true;
             }
         }
-        if (task['video'] == false && score[key].sort == 300) {
+        if (task['video'] == false && score[key].sort == 310) {
             if (score[key].currentScore < score[key].dayMaxScore) {
                 task['video'] = true;
             }
         }
-        if (task['video'] == false && score[key].sort == 400) {
-            if (score[key].currentScore < score[key].dayMaxScore) {
-                task['video'] = true;
-            }
-        }
-        if (task['paper'] == false && score[key].sort == 700) {
-            if (paperTitle == 0 && score[key].currentScore <= 0) {
-                task['paper'] = true;
-            }
-        }
-
+        // if (task['paper'] == false && score[key].sort == 700) {
+        //     if (paperTitle == 0 && score[key].currentScore <= 0) {
+        //         task['paper'] = true;
+        //     }
+        // }
         if (task['day'] == false && score[key].sort == 500) {
             if (score[key].currentScore < score[key].dayMaxScore) {
                 task['day'] = true;

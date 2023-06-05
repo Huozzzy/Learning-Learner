@@ -2,7 +2,7 @@
 ## 自用！
 
 ## 更新说明
-# 2023.5.9 根据获悉的消息做出优化，无法保证一定规避检测，谨慎使用！
+# 2023.6.5 更新最新学习规则
 
 ## 下载
 * [最新发布](https://github.com/Huozzzy/Learning-Learner/releases/)
