@@ -30,14 +30,14 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
 
                         // 增加视频播放功能
 
-                        // let video = document.querySelector('video');
-                        // video.muted = true
-                        // video.play();
-                        //
-                        // let videoTime = parseInt(video.duration) * 1000;
-                        // if (videoTime > 0 && videoTime < newTime) {
-                        //     newTime = videoTime;
-                        // }
+                        let video = document.querySelector('video');
+                        video.muted = true
+                        video.play();
+                        
+                        let videoTime = parseInt(video.duration) * 1000;
+                        if (videoTime > 0 && videoTime < newTime) {
+                            newTime = videoTime;
+                        }
 
                     }
 
@@ -48,7 +48,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                                 window.close();
                             }
                         });
-                    }, newTime + Math.floor(Math.random() *  3000));
+                    }, newTime + Math.floor(Math.random() *  1000));
 
                     // 页面点击时间
                     if (document.querySelector(".content")) {
@@ -62,7 +62,7 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                     });
                     autoScroll(type);
 
-                },  Math.floor(Math.random() * 5000));
+                },  Math.floor(Math.random() * 3000));
             });
 
             // 滚动方法
@@ -87,8 +87,8 @@ chrome.runtime.sendMessage({ type: "checkRunning" }, {}, function (response) {
                             top: x ? 0 : -100 + Math.floor(Math.random() * 200),
                             behavior: "smooth"
                         });
-                        autoScroll(type);
-                    }, 6000 + Math.floor(Math.random() * 1000));
+                        // autoScroll(type);
+                    }, 3000 + Math.floor(Math.random() * 1000));
                 }
             }
         }

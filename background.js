@@ -1,4 +1,4 @@
-let  scoreData = 0;
+let scoreData = 0;
 let urlMap = {
     "index": "https://www.xuexi.cn",
     "points": "https://pc.xuexi.cn/points/my-points.html",
@@ -39,7 +39,7 @@ let channel = {
 
 // 学习开始
 function startRun() {
-    chrome.storage.local.get(["studyConfig", "paperTitle", "studyWindowId", "studyTabId"], function (result) {
+    chrome.storage.local.get(["studyConfig", "studyWindowId", "studyTabId"], function (result) {
         if (result.studyWindowId && result.studyTabId) {
             // 获取积分数据
             fetch(urlMap.scoreApi)
@@ -48,10 +48,10 @@ function startRun() {
                     if (requestData.hasOwnProperty("code") && parseInt(requestData.code) === 200) {
                         scoreData = requestData.data;
                         // 浏览器扩展图标
-                        chrome.action.setBadgeText({"text": scoreData.totalScore.toString()});
+                        chrome.action.setBadgeText({ "text": scoreData.totalScore.toString() });
                         // 获取请求类型
                         let type;
-                        type = getTypeByPoint(scoreData.taskProgress, result.studyConfig, result.paperTitle );
+                        type = getTypeByPoint(scoreData.taskProgress, result.studyConfig);
                         if (typeof (type) != "undefined" && type != null) {
                             (async () => {
                                 const url = await getUrlByType(type);
@@ -62,7 +62,7 @@ function startRun() {
                                     });
                                 } else {
                                     // 定时重新执行
-                                    setTimeout(startRun, Math.floor(10000 + Math.random() * 30 * 1000));
+                                    setTimeout(startRun, Math.floor(5000 + Math.random() * 30 * 1000));
                                     // 获取页面失败
                                     noticeMessage(chrome.i18n.getMessage("extChannelApi"), chrome.i18n.getMessage("extUpdate"));
                                 }
@@ -81,7 +81,7 @@ function startRun() {
                 .catch(error => function (error) {
                     console.log(error);
                     // 定时重新执行
-                    setTimeout(startRun, Math.floor(10000 + Math.random() * 30 * 1000));
+                    setTimeout(startRun, Math.floor(5000 + Math.random() * 30 * 1000));
                 });
         }
     });
@@ -93,9 +93,7 @@ function startRun() {
 async function getUrlByType(type) {
     let url;
 
-    if (type == "paper") {
-        url = urlMap.paperAsk;
-    }  else if (type == "day") {
+    if (type == "day") {
         url = urlMap.dailyAsk;
     } else {
         let key;
@@ -107,8 +105,6 @@ async function getUrlByType(type) {
         try {
             const response = await fetch(urlMap.channelApi + key + ".json?_st=" + Math.floor(Date.now() / 6e4));
             const urlData = await response.json();
-
-
             let urlList = [];
             let urlTemp;
             let publishTime;
@@ -118,10 +114,10 @@ async function getUrlByType(type) {
                 }
                 if (urlData[key].hasOwnProperty("url")) {
                     urlTemp = urlData[key].url;
-                    // 判断发布时间是否是365天之内，如果没有，判断url规则
+                    // 判断发布时间是否是10天之内，如果没有，判断url规则
                     if (urlData[key].hasOwnProperty("publishTime")) {
                         publishTime = new Date(urlData[key].publishTime);
-                        var lastYear = new Date(new Date() - 20 * 86400000);
+                        var lastYear = new Date(new Date() - 10 * 86400000);
                         if (publishTime < lastYear) {
                             continue;
                         }
@@ -149,7 +145,7 @@ async function getUrlByType(type) {
 }
 
 // 1阅读文章，2试听学习，4专项答题，5每周答题，6每日答题，9登录，1002文章时长，1003视听学习时长
-function getTypeByPoint(score, configs, paperTitle ) {
+function getTypeByPoint(score, configs) {
     let type;
     let config = configs.sort(function (a, b) {
         return a.sort - b.sort;
@@ -167,7 +163,7 @@ function getTypeByPoint(score, configs, paperTitle ) {
         if (!score.hasOwnProperty(key)) {
             continue;
         }
-        if (task['article'] == false && (score[key].sort == 200 )) {
+        if (task['article'] == false && (score[key].sort == 200)) {
             if (score[key].currentScore < score[key].dayMaxScore) {
                 task['article'] = true;
             }
@@ -200,11 +196,11 @@ function getTypeByPoint(score, configs, paperTitle ) {
 
 // 开始学习
 function startStudy() {
-    
+
     // 获取数据，判断执行
     chrome.storage.local.get(["studyWindowId"], function (result) {
         if (!result.studyWindowId) {
-                chrome.windows.create({
+            chrome.windows.create({
                 "url": urlMap.points,
                 "type": "popup",
                 "top": 0,
@@ -212,15 +208,15 @@ function startStudy() {
                 "width": 300,
                 "height": 400,
             }, function (window) {
-                chrome.windows.update(window.id, {state:'maximized'});
+                chrome.windows.update(window.id, { state: 'maximized' });
                 chrome.storage.local.set({
                     "studyWindowId": window.id,
                     "studyTabId": window.tabs[window.tabs.length - 1].id,
                     "paperTitle": 0,
                 }, function () {
                     // 静音处理
-                    chrome.tabs.update(window.tabs[window.tabs.length - 1].id, { 
-                        "muted": true 
+                    chrome.tabs.update(window.tabs[window.tabs.length - 1].id, {
+                        "muted": true
                     });
                     // 开始学习
                     noticeMessage(chrome.i18n.getMessage("extWarning"));
@@ -232,11 +228,11 @@ function startStudy() {
             noticeMessage(chrome.i18n.getMessage("extWorking"));
 
             // 设置焦点
-            chrome.windows.update(result.studyWindowId, { 
-                "focused": true ,
+            chrome.windows.update(result.studyWindowId, {
+                "focused": true,
                 'updateProperties': {
-                'state': 'maximized'
-              }
+                    'state': 'maximized'
+                }
             });
         }
     });
@@ -346,11 +342,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             break;
 
         // 专项答题
-        case "paperTitle":
-            chrome.storage.local.set({ "paperTitle": 1 });
-            startRun();
-            sendResponse({ "complete": 0 });
-            break;
+        // case "paperTitle":
+        //     chrome.storage.local.set({ "paperTitle": 1 });
+        //     startRun();
+        //     sendResponse({ "complete": 0 });
+        //     break;
 
         // 学习完成
         case "studyComplete":

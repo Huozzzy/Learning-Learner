@@ -2,7 +2,7 @@
 ## 自用！
 
 ## 更新说明
-# 2023.6.5 更新最新学习规则
+# 2023.6.14 解决视频播放小问题
 
 ## 下载
 * [最新发布](https://github.com/Huozzzy/Learning-Learner/releases/)
